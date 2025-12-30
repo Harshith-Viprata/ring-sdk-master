@@ -1,0 +1,309 @@
+<resources>
+    <string name="app_name">YC_Tools</string>
+
+    <string name="rtk_dfu_file_size">%d bytes</string>
+    <string name="rtk_dfu_detail_file_info_sub_file_type">Type:</string>
+    <string name="rtk_dfu_detail_file_info_sub_file_version">Version:</string>
+    <string name="rtk_dfu_detail_file_info_sub_file_size">size:</string>
+    <string name="rtk_dfu_image_section_size">Section size:</string>
+
+    <string name="header_title_dfu_file_info">File details</string>
+
+    <string name="rtk_dfu_text_file_path">File path</string>
+    <string name="rtk_dfu_text_file_name">File name</string>
+    <string name="rtk_dfu_text_file_type">file type</string>
+    <string name="rtk_dfu_text_file_size">file size</string>mnj89
+    <string name="rtk_dfu_text_target_device">device</string>
+    <string name="rtk_dfu_text_file_upload_content">Upload Content</string>
+    <string name="rtk_dfu_text_file_image_size">Image size</string>
+    <string name="rtk_dfu_text_file_image_version">Image version</string>
+    <string name="rtk_dfu_text_file_status">Status</string>
+    <string name="rtk_dfu_text_file_ic_type">chip</string>
+
+    <string name="rtk_dfu_title_device_info">Device information</string>
+    <string name="rtk_dfu_title_file_content">File content</string>
+    <string name="rtk_dfu_title_work_mode">Work Mode</string>
+
+    <string name="rtk_dfu_text_target_name">device name</string>
+    <string name="rtk_dfu_text_target_bd_address">Bluetooth address</string>
+    <string name="rtk_dfu_text_battery_level">Battery</string>
+    <string name="rtk_dfu_text_target_device_mac">MAC</string>
+    <string name="rtk_dfu_text_target_link_key">Link Key</string>
+    <string name="rtk_dfu_text_target_old_fw_version">Peer APP version</string>
+    <string name="rtk_dfu_text_target_old_patch_version">Peer Patch Version</string>
+    <string name="rtk_dfu_text_target_patch_extend_version">Peer Extend Patch Version</string>
+    <string name="rtk_dfu_text_target_ic_type">IC type</string>
+    <string name="rtk_dfu_text_target_protocol_type">Protocol type</string>
+    <string name="rtk_dfu_text_target_update_mechanism">Upgrade mechanism</string>
+    <string name="rtk_dfu_text_target_bank">The current bank area to be upgraded</string>
+    <string name="rtk_dfu_text_target_pactch_bank">The current Patch Bank area to be upgraded</string>
+    <string name="rtk_dfu_text_target_Aes_Mode">AES encryption</string>
+    <string name="rtk_dfu_text_target_buffer_check_mode">Buffer Check</string>
+    <string name="rtk_dfu_text_target_max_buffer_size">Maximum Buffer Check value</string>
+    <string name="rtk_dfu_text_target_appData0_version">Current App Data0 version</string>
+    <string name="rtk_dfu_text_target_appData1_version">Current App Data1 version</string>
+    <string name="rtk_dfu_text_target_appData2_version">Current App Data2 version</string>
+    <string name="rtk_dfu_text_target_appData3_version">Current App Data3 version</string>
+
+    <string name="rtk_dfu_file_status_ok">OK</string>
+    <string name="rtk_dfu_file_status_no_file">File not loaded</string>
+    <string name="rtk_dfu_file_version_text_detail">File details</string>
+
+    <string name="rtk_dfu_work_mode_normal">normal upgrade</string>
+    <string name="rtk_dfu_work_mode_extension">External Flash upgrade</string>
+    <string name="rtk_dfu_work_mode_slient">Silent upgrade</string>
+    <string name="rtk_dfu_work_mode_silent_no_temp">No Temp</string>
+    <string name="rtk_dfu_work_mode_unknown">Unknown</string>
+
+    <string name="rtk_dfu_file_type_single">Single file</string>
+    <string name="rtk_dfu_file_type_pack">Compressed Pack</string>
+    <string name="rtk_dfu_file_content_type_full">all</string>
+    <string name="rtk_dfu_file_type_merge_patch">Merge Patch</string>
+    <string name="rtk_dfu_file_type_merge_app">Merge App</string>
+    <string name="rtk_dfu_file_type_merge_user_data">Merge User data</string>
+    <string name="rtk_dfu_file_type_merge_patch_extension">Merge Patch Extension</string>
+    <string name="rtk_dfu_file_type_merge_config_file">Merge Config file</string>
+    <string name="rtk_dfu_file_type_merge_external_flash_image">Merge External Flash image</string>
+    <string name="rtk_dfu_file_type_unknown">unknown</string>
+
+    <string name="rtk_dfu_unknown_device">Unknown device</string>
+    <string name="rtk_dfu_scanner_title">Choose a device you want to upgrade:</string>
+    <string name="rtk_dfu_scanner_empty">No device found</string>
+    <string name="rtk_dfu_scanner_action_scan">Search</string>
+    <string name="rtk_dfu_scanner_action_cancel">Cancel</string>
+    <string name="rtk_dfu_scanner_subtitle_bonded">Paired device:</string>
+    <string name="rtk_dfu_scanner_subtitle_not_bonded">Available devices:</string>
+
+
+    <string name="rtk_dfu_progress_state_origin">Ready to upgrade</string>
+
+    <string name="rtk_dfu_state_known">Unknown</string>
+    <string name="rtk_dfu_state_origin">Initialization</string>
+    <string name="rtk_dfu_state_initialize">Initialize &#8230;</string>
+    <string name="rtk_dfu_state_start">Starting &#8230;</string>
+    <string name="rtk_dfu_state_remote_enter_ota">Enter upgrade mode&#8230;</string>
+    <string name="rtk_dfu_state_find_ota_remote">Search device&#8230;</string>
+    <string name="rtk_dfu_state_connect_ota_remote">Connect Device&#8230;</string>
+    <string name="rtk_dfu_state_prepare_dfu_processing">Prepare the upgrade environment &#8230;</string>
+    <string name="rtk_dfu_state_start_ota_processing">Upgrading&#8230;</string>
+    <string name="rtk_dfu_state_hand_over_processing">HandOver&#8230;</string>
+    <string name="rtk_dfu_state_ota_send_file">Sending file %1$d/%2$d &#8230;</string>
+    <string name="rtk_dfu_state_upgrade_success">Upgrade succeeded</string>
+    <string name="rtk_dfu_state_pending_active_image">Pending firmware activation &#8230;</string>
+    <string name="rtk_dfu_state_start_active_image">Firmware Activating &#8230;</string>
+    <string name="rtk_dfu_state_image_active_success">Firmware activation successful</string>
+    <string name="rtk_dfu_state_abort_processing">Waiting for cancellation...</string>
+    <string name="rtk_dfu_state_error_processing">Processing errors...</string>
+    <string name="rtk_dfu_state_aborted">Cancelled</string>
+    <string name="rtk_dfu_state_scan_secondary_bud">Searching for secondary device...</string>
+
+    <string name="rtk_dfu_toast_error_message">Error code: %1$s\nOverview: %2$s\nDetails: %3$s</string>
+    <string name="rtk_dfu_toast_connection_error_message">Initialization of the connection to the peer device is abnormal,\n%s</string>
+    <string name="rtk_dfu_toast_ota_is_processing">Firmware upgrade in progress</string>
+    <string name="rtk_dfu_toast_ota_is_processing_exist">Firmware upgrade in progress, are you sure you want to exit</string>
+    <string name="rtk_dfu_toast_no_ble">Device does not support BLE</string>
+    <string name="rtk_dfu_toast_bt_enabled">Bluetooth is on</string>
+    <string name="rtk_dfu_toast_bt_not_enabled">Bluetooth not turned on</string>
+    <string name="rtk_dfu_toast_connect_device">Connecting to device: %1$s, please wait...</string>
+    <string name="rtk_dfu_toast_operation_failed">Operation failed</string>
+    <string name="rtk_dfu_toast_no_device">Device not connected</string>
+
+    <string name="rtk_dfu_fc_undefined">undefined</string>
+    <string name="rtk_dfu_fc_pack_loss">No upgradeable files found</string>
+    <string name="rtk_dfu_fc_pack_loss_empty">Package file cannot be empty</string>
+    <string name="rtk_dfu_fc_pack_duplicate_bank">The bank of the selected file is the same as the current device bank</string>
+    <string name="rtk_dfu_fc_pack_loss_ota_header">Package file has no OTA Header</string>
+    <string name="rtk_dfu_fc_pack_loss_rom_patch">Package file has no Rom Patch</string>
+    <string name="rtk_dfu_fc_pack_loss_app_image">Package file has no App Image</string>
+    <string name="rtk_dfu_fc_pack_loss_low_version">Lower firmware version, no upgradeable files</string>
+    <string name="rtk_dfu_fc_pack_nt">Packing files are not supported</string>
+    <string name="rtk_dfu_fc_pack_nt_ota_header">Package files with OTA Header are not supported</string>
+    <string name="rtk_dfu_fc_pack_nt_bank_switch">The selected file does not support bank switching</string>
+    <string name="rtk_dfu_fc_single_nt">The selected file is not a package file</string>
+
+    <string name="rtk_dfu_update_mechanism_one_by_one">One By One</string>
+    <string name="rtk_dfu_update_mechanism_all_in_one">All In One</string>
+    <string name="rtk_dfu_update_mechanism_all_in_one_with_buffer">All In One With Buffer</string>
+
+    <string name="rtk_dfu_connection_state_no_device">no device</string>
+    <string name="rtk_dfu_connection_state_connecting">Connecting...</string>
+    <string name="rtk_dfu_connection_state_disconnected">disconnected</string>
+    <string name="rtk_dfu_connection_state_connected">Connected</string>
+    <string name="rtk_dfu_connection_state_discovering_services">Query Services...</string>
+    <string name="rtk_dfu_connection_state_request_mtu">Request MTU…</string>
+    <string name="rtk_dfu_connection_state_set_perfered_phy">Configure PHY …</string>
+    <string name="rtk_dfu_connection_state_enable_cccd">Enable CCCD …</string>
+    <string name="rtk_dfu_connection_state_not_supported">Not supported </string>
+    <string name="rtk_dfu_connection_state_disconnecting">Disconnecting...</string>
+
+    <string name="rtk_dfu_no_available_upload_file">No upgradeable file</string>
+
+    <string name="rtk_dfu_action_reset">Reset</string>
+    <string name="rtk_dfu_action_disconnect">Disconnect</string>
+    <string name="rtk_dfu_action_submit">Submit</string>
+
+    <string name="rtk_ota_state_known">Unknown</string>
+    <string name="rtk_ota_state_oritin">origin</string>
+    <string name="rtk_ota_state_bind_service">bind service ...</string>
+    <string name="rtk_ota_state_init_ok">initialized</string>
+    <string name="rtk_ota_state_preparing">preparing ...</string>
+    <string name="rtk_ota_state_connecting">connecting ...</string>
+    <string name="rtk_ota_state_process_pair_request">pair request ...</string>
+    <string name="rtk_ota_state_pending_discover_service">pending discover service ...</string>
+    <string name="rtk_ota_state_discover_service">discover service ...</string>
+    <string name="rtk_ota_state_read_device_info">read device info ...</string>
+    <string name="rtk_ota_state_read_protocol_type">read protocol info ...</string>
+    <string name="rtk_ota_state_read_image_info">read image info ...</string>
+    <string name="rtk_ota_state_read_battery_info">read battery info ...</string>
+    <string name="rtk_ota_state_prepared">connected.</string>
+    <string name="rtk_ota_state_ota_processing">ota processing ...</string>
+    <string name="pref_title_dfu_file_suffix">File suffix</string>
+    <string name="pref_category_title_normal_mode">Normal upgrade</string>
+    <string name="pref_title_dfu_handover_timeout">Handover timeout (seconds)</string>
+    <string name="pref_title_dfu_wait_disconnect_when_enter_ota_mode">Wait for disconnection after entering OTA mode</string>
+    <string name="rtk_dfu_bin_indicator_00">image does not exist</string>
+    <string name="rtk_dfu_bin_indicator_01">image is in bank0, bank1 should be upgraded</string>
+    <string name="rtk_dfu_bin_indicator_10">image is in bank1, bank0 should be upgraded</string>
+    <string name="rtk_dfu_bin_indicator_undefined">undefined</string>
+    <string name="rtk_dfu_bin_indicator_11">image is standalone, ota should update for standalone</string>
+
+    <string name="home_ecg_measure_btn">ECG measurement</string>
+    <string name="include_bottom_tv_fourthly_button">History</string>
+
+    <string name="ai_go">AI Diagnostics</string>
+    <string name="record">record</string>
+    <string name="sync">Sync</string>
+    <!--Pop up progress bar-->
+    <string name="prompt">prompt</string>
+    <string name="ecg_sync_data">Syncing, please wait&#8230;</string>
+    <string name="ecg_sync_data_failed">Sync failed</string>
+    <string name="ecg_sync_data_success">Successful synchronization</string>
+
+    <string name="ecg_header_title">Gain: 10mm/mv Speed: 25mm/s Lead I</string>
+    <string name="login_user_name">username</string>
+    <string name="function_heart">heart rate</string>
+    <string name="function_bp">blood pressure</string>
+    <string name="age_text">Age</string>
+    <string name="sex_text">Gender</string>
+    <string name="man_text">Male</string>
+    <string name="woman_text">Female</string>
+
+    <!--ECG measurement page title-->
+    <string name="ecg_measure_title">ECG measurement</string>
+    <!--ECG measurement page bpm data-->
+    <string name="ecg_measure_bpm_text">--</string>
+    <!--ECG measurement page bpm unit-->
+    <string name="ecg_measure_bpm_unit">bpm</string>
+    <!--ECG measurement page mmHg data-->
+    <string name="ecg_measure_mmhg_text">--/--</string>
+    <!--ECG measurement page mmHg unit-->
+    <string name="ecg_measure_mmhg_unit">mmHg</string>
+    <!--ECG measurement page HRV data-->
+    <string name="ecg_measure_hrv_text">--</string>
+    <!--ECG measurement page HRV unit-->
+    <string name="ecg_measure_hrv_unit">HRV</string>
+    <!--ECG measurement page electrode contact is good-->
+    <string name="ecg_measure_electric_on">The electrodes are in good contact</string>
+    <!--ECG measurement page Electrodes fall off-->
+    <string name="ecg_measure_electric_off">Electrode off</string>
+    <!--ECG measurement page start-->
+    <string name="ecg_measure_start">Start</string>
+    <!--ECG measurement page complete-->
+    <string name="ecg_measure_finish">finish</string>
+    <!--ECG measurement page progress bar progress-->
+    <string name="ecg_measure_progress_text">0%</string>
+
+    <!--ECG measurement page Dialog dialog_ecg_measur.xml -->
+    <!--ECG measurement page Tips-->
+    <string name="ecg_measure_dialog_hint_text">wearing tips</string>
+    <!--ECG measurement page prompts-->
+    <string name="ecg_measure_dialog_marked_words_text">Please wear the bracelet tightly, so that the back metal sheet is close to the skin, and your fingers touch the metal sheet on the bracelet</string>
+    <!--ECG measurement page Confirmation-->
+    <string name="ecg_measure_dialog_confirm_text">Confirm</string>
+
+    <!--ECG measurement page Dialog-->
+    <string name="ecg_measure_dialog_message">Whether to end ECG measurement</string>
+    <string name="ecg_measure_dialog_message_low_time">This measurement time is too short, no data will be recorded, is it over? </string>
+    <string name="ecg_measure_dialog_title">Tips</string>
+
+    <!--Custom Dialog common_dialog_layout.xml-->
+    <string name="common_dialog_tv_title">Message alert</string>
+    <string name="common_dialog_tv_message">Prompt message prompt message prompt message prompt message prompt message prompt message prompt message prompt message</string>
+    <string name="common_dialog_cancel">Cancel</string>
+    <string name="common_dialog_confirm">OK</string>
+
+    <string name="dial_is_installing">Installing&#8230;</string>
+    <string name="In_sync">Syncing</string>
+    <string name="electrocardiogram">ECG recording</string>
+    <string name="blood_pressure">blood pressure</string>
+    <string name="heart">heart rate</string>
+    <string name="hrv">HRV</string>
+    <string name="save_success">Save successfully</string>
+    <string name="save_failed">Save failed</string>
+    <string name="updating">Updating&#8230;</string>
+
+    <string name="connect_success">Connection succeeded</string>
+
+    <string name="new_function">New watch command function</string>
+    <string name="old_function">Old watch command function</string>
+    <string name="other_function">Other functions</string>
+    <string name="ecg_function">ECG function</string>
+    <string name="device_contacts">Contacts</string>
+    <string name="device_check_aliiotkit">Activity ALiIotKit</string>
+
+    <string name="send_value_to_device">Send value to device</string>
+    <string name="start_blood_sugar">Start blood sugar</string>
+    <string name="start_ecg_measure">Start ECG test</string>
+    <string name="set_ambient_light_measure_mode">Set ambient light detection mode</string>
+    <string name="set_ambient_temperature_and_humidity_monitoring_mode">Set ambient temperature and humidity monitoring mode</string>
+    <string name="set_ambient_Light_mode">Set ambient light mode</string>
+    <string name="get_temperature_and_humidity_historical_data">Get historical temperature and humidity data</string>
+    <string name="get_ambient_light_historical_data">Get ambient light historical data</string>
+    <string name="set_blood_oxygen_mode">Set blood oxygen mode</string>
+    <string name="get_blood_oxygen_historical_data">Get blood oxygen historical data</string>
+    <string name="get_shedding_history_data">Get shedding history data</string>
+    <string name="set_schedule">set schedule</string>
+    <string name="add_schedule">Add Schedule</string>
+    <string name="get_schedule">Get Schedule</string>
+    <string name="delete_schedule">Delete schedule</string>
+    <string name="modify_schedule">Modify schedule</string>
+    <string name="relatives_shock_me">Family and friends shock me</string>
+    <string name="send_mobile_type">Send phone model</string>
+    <string name="send_weather">Send Weather</string>
+    <string name="incoming_call">Incoming call reminder</string>
+    <string name="find_mobile">Find Mobile</string>
+    <string name="accidental_detection">accidental detection</string>
+    <string name="set_screen_brightness">Set screen brightness</string>
+    <string name="set_screen_time">Set screen time</string>
+    <string name="raise_your_wrist_to_brighten_the_screen_switch">raise wrist to brighten screen switch</string>
+    <string name="set_do_not_disturb_mode">Set Do Not Disturb Mode</string>
+    <string name="shutdown">Shutdown</string>
+    <string name="reboot">reboot</string>
+    <string name="reset">Reset to factory settings</string>
+    <string name="set_working_mode">Set working mode</string>
+    <string name="get_working_mode">Get working mode</string>
+    <string name="set_data_upload_threshold">Set data upload threshold</string>
+    <string name="ambient_light_monitoring_interval">Ambient light monitoring interval</string>
+    <string name="temperature_and_humidity_monitoring_interval">Temperature and humidity monitoring interval</string>
+    <string name="temperature_monitoring_interval">Body temperature monitoring interval</string>
+    <string name="set_sports_compliance">Sports compliance setting</string>
+    <string name="app_calculates_the_heart_rate_and_synchronizes_it_to_the_watch">APP calculates heart rate and synchronizes to watch</string>
+    <string name="exercise_risk">exercise risk</string>
+    <string name="app_push_information">APP push information</string>
+    <string name="sport_data_write_back">Sport data writeback</string>
+    <string name="sleep_data_write_back">Sleep data writeback</string>
+    <string name="temperature_alarm">Temperature alarm</string>
+    <string name="set_the_main_interface">Set the main interface</string>
+    <string name="get_the_main_interface">Get the main interface</string>
+    <string name="set_time_mode">set time mode</string>
+    <string name="get_power">Get power</string>
+    <string name="get_temperature_history_data">Get temperature history data</string>
+    <string name="get_sleep_history_data">Get sleep history data</string>
+    <string name="get_heart_rate_history_data">Get heart rate history data</string>
+    <string name="get_sport_history_data">Get sports history data</string>
+    <string name="get_ecg_history_data">Sync ecg history data</string>
+    <string name="heart_rate_alarm">heart rate alarm</string>
+
+    <string name="firmware_upgrade">Firmware upgrade</string>
+    <string name="ui_upgrade">Ui upgrade</string>
+</resources>

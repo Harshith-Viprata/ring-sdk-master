@@ -1,0 +1,102 @@
+
+
+ECG诊断 ECG diagnosis
+
+1. 结果的参数说明 Parameter description of the result
+	
+	1. is_atrial_fibrillation 是否心房颤动(房颤) Whether atrial fibrillation  
+	2. qrstype  
+		1 正常   Normal ECG
+		2 心室扑动 Ventricular flutter
+		3 交界性早搏  junction premature beats
+		4 交界性逸搏  junction escape
+		5 室性早搏  Ventricular premature beats
+		6 室性逸搏  Ventricular escape
+		7 左束支传导阻滞  left bundle branch block
+		8 右束支传导阻滞  Right bundle branch block
+		9 房性早搏  Atrial premature beats
+		10 房性逸搏  Atrial escape
+		14 异常心电图(波形不正常) Abnormal ECG (abnormal waveform)
+
+	3.heart  心率 Heart rate
+		heart<= 50  疑似心动过缓  Suspected bradycardia
+		heart>= 120 疑似心动过速  Suspected tachycardia
+	    hrv >= 125  疑似窦性心律不齐 Suspected sinus arrhythmia
+
+ 说明:
+	1. is_atrial_fibrillation 优先级最高，如果为true, 则后面的条件都不判断.
+	2. 当is_atrial_fibrillation 为 false时，进行  qrstype的判断，得到对应的结论。
+	3. 当前  qrstype == 1 时，需要对 heart进行判断。
+
+illustrate:
+	1. is_atrial_fibrillation has the highest priority, if it is true, then the following conditions will not be judged.
+	2. When is_atrial_fibrillation is false, judge the qrstype and get the corresponding conclusion.
+	3. When the current qrstype == 1, the heart needs to be judged.
+
+2. 类型与文字说明  Type and text description
+
+0.心房颤动 Atrial fibrillation
+	QRS波形正常，正常P波消失，出现f波，R-R间距不规则。
+	QRS waveform was normal, normal P wave disappeared, F wave appeared, R-R interval was irregular.
+
+1.正常 Normal ECG
+	QRS波形形态时限振幅正常，P-R间期正常，ST-T无改变，Q-T间期正常。
+	The amplitude of QRS waveform was normal, P-R interval was normal, ST-T was not changed, and Q-T interval was normal.
+
+2.心室扑动 Ventricular flutter
+	QRS-T波形异常, 正常P波消失，出现f波。
+	The waveform of QRS-T is abnormal, the normal P waveform disappeared, the f waveform showed up.
+
+3.交界性早搏  junction premature beats
+	QRS波群正常，P波倒置，P-R < 0.12秒。
+	QRS complex was normal, P wave inversion, P-R < 0.12s.
+
+
+4.交界性逸搏  junction escape
+	QRS波群正常，有窦性P波。
+ 	QRS complex was normal with sinus P wave.
+
+ 5.室性早搏  Ventricular premature beats
+ 	QRS-T波形宽大变形， QRS波形前无相关P波，QRS时限 > 0.12秒，T波方向与主波相反，完全性代偿间歇。
+
+	The qrs-t waveform was wide and deformed. There was no related P wave before the QRS waveform. The QRS duration was > 0.12 seconds. The direction of T wave was opposite to that of the main wave.
+
+6.室性逸搏  Ventricular escape
+	QRS波形宽大畸形，逸博周期>0.15秒。
+
+	QRS waveform was wide and abnormal, and the escape period was more than 0.15 seconds.
+
+7.左束支传导阻滞 left bundle branch block
+	QRS波形增宽，QRS波形群时限 >= 0.12秒，ST-T方向与QRS主波方向相反。
+	QRS waveform widened, QRS waveform group time limit > = 0.12s, ST-T direction was opposite to QRS main wave direction.
+
+8.右束支传导阻滞 Right bundle branch block
+	QRS波形增宽，QRS波形群时限 >= 0.12秒，ST-T方向与QRS波终末向量方向相反，出现R波.
+
+	QRS waveform widened, QRS waveform group time limit >= 0.12s, ST-T direction was opposite to QRS wave terminal vector direction, and R wave appeared
+
+9. 房性早搏 Atrial premature beats
+	QRS波形正常，变异P波提前出现，P-R > 0.12秒，代偿间歇不完全。
+	QRS waveform was normal, variant P wave appeared ahead of time, P-R > 0.12 s, compensation interval was incomplete.
+
+10.房性逸搏 Atrial escape
+	P波在Ⅰ、Ⅱ、aVF导联直立，aVR倒置, P-R间期0.12～0.20秒。
+	P wave was upright in leads I, II and AVF, AVR was inverted, and P-R interval was 0.12-0.20 seconds.
+
+14.异常心电图  Abnormal ECG
+	抱歉！本次测量信号欠佳，可能是皮肤干燥造成，请清洁或者润湿测试部位的皮肤后重新测试，测试过程中保持安静。
+
+	This measurement signal is not good, which may caused by dry-skin. Please clean or moisten the skin and retest. Keep quiet during the test.
+
+
+15. 疑似心动过缓 Suspected bradycardia
+	QRS波形正常，R-R间距偏长。
+	The QRS waveform was normal and the R-R interval was too long.
+
+16.疑似心动过速  Suspected tachycardia
+	QRS波形正常，R-R间距偏短。
+	The QRS waveform was normal and the R-R interval was short.
+
+17. 疑似窦性心律不齐  Suspected sinus arrhythmia
+	QRS波形正常，R-R间距变化偏大
+	The QRS waveform was normal, and the R-R interval changed too much

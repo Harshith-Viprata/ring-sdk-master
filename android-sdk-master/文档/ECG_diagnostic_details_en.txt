@@ -1,0 +1,78 @@
+﻿
+
+ECG diagnosis
+
+1. Parameter description of the result
+	
+	1. is_atrial_fibrillation   Whether atrial fibrillation  
+	2. qrstype  
+		1 Normal ECG
+		2 Ventricular flutter
+		3 junction premature beats
+		4 junction escape
+		5 Ventricular premature beats
+		6 Ventricular escape
+		7 left bundle branch block
+		8 Right bundle branch block
+		9 Atrial premature beats
+		10 Atrial escape
+		14 Abnormal ECG (abnormal waveform)
+
+	3.heart  Heart rate
+		heart<= 50  Suspected bradycardia
+		heart>= 120 Suspected tachycardia
+	    hrv >= 125  Suspected sinus arrhythmia
+
+illustrate:
+	1. is_atrial_fibrillation has the highest priority, if it is true, then the following conditions will not be judged.
+	2. When is_atrial_fibrillation is false, judge the qrstype and get the corresponding conclusion.
+	3. When the current qrstype == 1, the heart needs to be judged.
+
+2. Type and text description
+
+0.Atrial fibrillation
+	QRS waveform was normal, normal P wave disappeared, F wave appeared, R-R interval was irregular.
+
+1.Normal ECG
+	The amplitude of QRS waveform was normal, P-R interval was normal, ST-T was not changed, and Q-T interval was normal.
+
+2.Ventricular flutter
+	The waveform of QRS-T is abnormal, the normal P waveform disappeared, the f waveform showed up.
+
+3.junction premature beats
+	QRS complex was normal, P wave inversion, P-R < 0.12s.
+
+
+4.junction escape
+ 	QRS complex was normal with sinus P wave.
+
+5.Ventricular premature beats
+	The qrs-t waveform was wide and deformed. There was no related P wave before the QRS waveform. The QRS duration was > 0.12 seconds. The direction of T wave was opposite to that of the main wave.
+
+6.Ventricular escape
+	QRS waveform was wide and abnormal, and the escape period was more than 0.15 seconds.
+
+7.left bundle branch block
+	QRS waveform widened, QRS waveform group time limit > = 0.12s, ST-T direction was opposite to QRS main wave direction.
+
+8.Right bundle branch block
+	QRS waveform widened, QRS waveform group time limit >= 0.12s, ST-T direction was opposite to QRS wave terminal vector direction, and R wave appeared
+
+9.Atrial premature beats
+	QRS waveform was normal, variant P wave appeared ahead of time, P-R > 0.12 s, compensation interval was incomplete.
+
+10.Atrial escape
+	P wave was upright in leads I, II and AVF, AVR was inverted, and P-R interval was 0.12-0.20 seconds.
+
+14.Abnormal ECG
+	This measurement signal is not good, which may caused by dry-skin. Please clean or moisten the skin and retest. Keep quiet during the test.
+
+
+15.Suspected bradycardia
+	The QRS waveform was normal and the R-R interval was too long.
+
+16.Suspected tachycardia
+	The QRS waveform was normal and the R-R interval was short.
+
+17.Suspected sinus arrhythmia
+	The QRS waveform was normal, and the R-R interval changed too much

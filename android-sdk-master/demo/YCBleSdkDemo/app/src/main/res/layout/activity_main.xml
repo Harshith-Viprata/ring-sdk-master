@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.example.ycblesdkdemo.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/auto_ui_upgrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="批量UI升级" />
+
+        <Button
+            android:id="@+id/auto_firmware_upgrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="批量固件升级" />
+
+        <Button
+            android:id="@+id/firmware_recovery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="固件恢复" />
+
+        <Button
+            android:id="@+id/auto_set_product_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="批量设置" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal">
+
+        <!--开始搜索设备-->
+        <Button
+            android:id="@+id/bt_start_scan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1.0"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="Start scanning" />
+-
+        <!--结束搜索设备-->
+        <Button
+            android:id="@+id/bt_stop_scan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1.0"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="End scanning" />
+
+        <Button
+            android:id="@+id/bt_disconnect_dev"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:layout_marginStart="5dp"
+            android:text="Disconnect" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <!--ECG实时开始-->
+        <Button
+            android:visibility="visible"
+            android:id="@+id/bt_write_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start ECG" />
+        <!--结束ECG实时-->
+        <Button
+            android:id="@+id/bt_write_stop"
+            android:layout_width="wrap_content"
+            android:visibility="visible"
+            android:layout_height="wrap_content"
+            android:text="Stop ECG" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_connect_dev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="连接固定设备"
+        android:visibility="gone" />
+
+    <!--实时状态上报-->
+    <Button
+        android:id="@+id/bt_write_real"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Real time status reporting"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/history_ppi_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="ppi历史数据" />
+
+        <Button
+            android:id="@+id/delete_history_ppi_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="删除ppi历史数据" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/bt_get_history_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get History data" />
+
+        <Button
+            android:id="@+id/bt_delete_history_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete History data" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_ui_getinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="文件断点信息"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/start_sport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开始运动" />
+
+        <Button
+            android:id="@+id/end_sport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="结束运动" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/get_ppi"
+            android:layout_width="wrap_content"
+            android:padding="5dp"
+            android:layout_height="wrap_content"
+            android:text="获取实时PPI" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/get_real"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="获取实时数据" />
+
+        <TextView
+            android:id="@+id/tv_get_real"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/history_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="同步三轴加速度历史数据" />
+
+        <Button
+            android:id="@+id/delete_history_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="删除三轴加速度历史数据" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/history_ecg_data_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="collectEcgDataWithIndex" />
+
+        <Button
+            android:id="@+id/history_ecg_data_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="collectEcgDataWithTimestamp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/history_data_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="同步环境光历史数据" />
+
+        <Button
+            android:id="@+id/delete_history_data_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="删除环境光历史数据" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#333333"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="数据采集间隔时间：" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="0dp"
+                android:layout_weight="1.0"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:background="@drawable/radio_selector"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:checked="true"
+                    android:text="10分钟"/>
+
+                <RadioButton
+                    android:id="@+id/radio_button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/radio_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="20分钟"/>
+
+                <RadioButton
+                    android:id="@+id/radio_button3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/radio_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="30分钟"/>
+
+                <RadioButton
+                    android:id="@+id/radio_button4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/radio_selector"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:text="40分钟"/>
+
+                <RadioButton
+                    android:id="@+id/radio_button5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/radio_selector"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:text="50分钟"/>
+
+                <RadioButton
+                    android:id="@+id/radio_button6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/radio_selector"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:text="60分钟"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/set_history_data_invert_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:visibility="visible"
+            android:textSize="12dp"
+            android:textColor="#000000"
+            android:text="设置" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#333333"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/history_blood_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="充气血压历史数据" />
+
+        <Button
+            android:id="@+id/delete_history_blood_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="删除血压历史数据" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/history_ppg_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="PPG历史数据" />
+
+        <Button
+            android:id="@+id/delete_history_ppg_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="删除PPG历史数据" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <EditText
+            android:id="@+id/ed_mac_initial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/text_color"
+            android:hint="初始值" />
+
+        <EditText
+            android:id="@+id/ed_mac_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:inputType="number"
+            android:textColor="@color/text_color"
+            android:hint="总数" />
+
+        <Button
+            android:id="@+id/ed_mac_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="开始生成" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/start_test_blood_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="开始测量充气血压"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/watchDialDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="表盘下载" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/open_real_temp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="OpenRealTemp"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/read_real_temp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="ReadRealTemp"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/close_real_temp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="CloseRealTemp"
+            android:textSize="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/send_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sendTestMessage" />
+
+        <Button
+            android:id="@+id/send_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sendMobileModel" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/send_reset_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="恢复出厂设置" />
+
+        <!--        <Button-->
+        <!--            android:id="@+id/send_model"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="sendMobileModel" />-->
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/device_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
+
+</LinearLayout>
