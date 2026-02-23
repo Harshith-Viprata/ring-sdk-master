@@ -1,1 +1,0 @@
-../../../MBProgressHUD+WJExtension/MBProgressHUD+WJExtension/WJColouredRibbonAnimation.h
