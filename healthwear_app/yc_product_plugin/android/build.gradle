@@ -1,0 +1,132 @@
+group 'com.example.yc_product_plugin'
+version '1.0'
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/'}
+        maven { url 'https://maven.aliyun.com/repository/jcenter/'}
+
+        google()
+        mavenCentral()
+       flatDir{
+           dirs project(':yc_product_plugin').file('libs')
+       }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.7.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/'}
+        maven { url 'https://maven.aliyun.com/repository/jcenter/'}
+        google()
+        mavenCentral()
+
+        // 配置依赖文件库
+        flatDir{
+            dirs project(':yc_product_plugin').file('libs')
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.example.yc_product_plugin'
+    }
+
+    compileSdkVersion 35
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        minSdkVersion 26
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"//,"x86","x86-64"
+        }
+        externalNativeBuild {
+            // For ndk-build, instead use the ndkBuild block.
+            cmake {
+                // Passes optional arguments to CMake.
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    dependencies {
+        testImplementation 'junit:junit:4.13.2'
+        testImplementation 'org.mockito:mockito-core:5.0.0'
+    }
+
+
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+               events "passed", "skipped", "failed", "standardOut", "standardError"
+               outputs.upToDateWhen {false}
+               showStandardStreams = true
+            }
+        }
+    }
+
+    // 导入 .so库
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+
+    // 配置引入 aar
+    api(name:"AliAgent-release-4.2.1",ext:"aar")
+    api(name:"BmpConvert_V1.6.0_10604-release",ext:"aar")
+
+
+    api(name:"jl_bluetooth_connect_V1.3.2-release",ext:"aar")
+
+    api(name:"jl_bt_ota_V1.10.0_10932-release",ext:"aar")
+    api(name:"jl_rcsp_V0.7.2_527-release",ext:"aar")
+    api(name:"JL_Watch_V1.13.1_11214-release",ext:"aar")
+
+    api(name:"ycbtsdk-release",ext:"aar")
+
+
+    // jar 简写
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    //解决Duplicate class kotlin.collections.jdk8.CollectionsJDK8Kt found in modules kotlin-stdlib-1.8.10
+    api(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+
+    // 52832 的升级包
+    api 'no.nordicsemi.android:dfu:2.4.0'
+
+    // 引入Gson解析
+    api 'com.google.code.gson:gson:2.8.6'
+    api "com.squareup.okhttp3:okhttp:4.4.0"
+    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+
+    implementation 'com.lai.weavey:dialog:2.0.1'
+}

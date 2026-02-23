@@ -1,0 +1,58 @@
+PODS:
+  - device_info (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - iOSDFULibrary (4.13.0):
+    - ZIPFoundation (= 0.9.11)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - permission_handler_apple (9.3.0):
+    - Flutter
+  - yc_product_plugin (0.0.1):
+    - Flutter
+    - iOSDFULibrary (~> 4.13.0)
+  - ZIPFoundation (0.9.11)
+
+DEPENDENCIES:
+  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - yc_product_plugin (from `.symlinks/plugins/yc_product_plugin/ios`)
+
+SPEC REPOS:
+  trunk:
+    - iOSDFULibrary
+    - ZIPFoundation
+
+EXTERNAL SOURCES:
+  device_info:
+    :path: ".symlinks/plugins/device_info/ios"
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
+  yc_product_plugin:
+    :path: ".symlinks/plugins/yc_product_plugin/ios"
+
+SPEC CHECKSUMS:
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4
+  iOSDFULibrary: ae1bcb1cb921e6e3ff551755f6fdff1b77e07e15
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  yc_product_plugin: 558944e7ba33c64fc788e54cb27e5b139534d236
+  ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
+
+PODFILE CHECKSUM: 097b311e811246e8df84a1a96d2f296525c2c3ce
+
+COCOAPODS: 1.15.2

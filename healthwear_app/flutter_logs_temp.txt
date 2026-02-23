@@ -1,0 +1,534 @@
+Showing SM M066B logs:
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+E/Flutter ( 8724): onRealDataResponse: {code=0, dataType=1536, sportStep=2662, sportDistance=1885, sportCalorie=120},1536
+I/flutter ( 8724): ===== onListening ==== (deviceRealStep)====({distance: 1885, step: 2662, calories: 120})
+D/FlutterJNI( 9664): Beginning load of flutter...
+D/FlutterJNI( 9664): flutter (null) was loaded normally!
+I/flutter ( 9664): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter ( 9664): The Dart VM service is listening on http://127.0.0.1:46833/vO7EK5DtNiQ=/
+D/FlutterRenderer( 9664): Width is zero. 0,0
+D/FlutterRenderer( 9664): Width is zero. 0,0
+D/FlutterJNI( 9664): Sending viewport metrics to the engine.
+D/FlutterJNI( 9664): Sending viewport metrics to the engine.
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter ( 9664): ===== onListening connectState ==== 2
+I/flutter ( 9664): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter ( 9664): ===== onListening getDeviceFeature
+I/flutter ( 9664): ===== onListening queryDeviceMCU
+I/flutter ( 9664): ===== onListening queryDeviceModel
+I/flutter ( 9664): ===== onListening end
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 4, state: 0})
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+E/Flutter ( 9664): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=67, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter ( 9664): ===== onListening ==== (deviceRealBloodGlucose)====(6.7)
+I/flutter ( 9664): ===== onListening ==== (deviceRealTemperature)====(0.0)
+E/Flutter ( 9664): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=67, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter ( 9664): ===== onListening ==== (deviceRealBloodGlucose)====(6.7)
+I/flutter ( 9664): ===== onListening ==== (deviceRealTemperature)====(0.0)
+E/Flutter ( 9664): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=67, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter ( 9664): ===== onListening ==== (deviceRealBloodGlucose)====(6.7)
+I/flutter ( 9664): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter ( 9664): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 5, state: 1})
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+E/Flutter ( 9664): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=0, tempFloat=5, tempInteger=36, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter ( 9664): ===== onListening ==== (deviceRealTemperature)====(36.5)
+I/flutter ( 9664): 测量返回值{code: 0, data: }
+I/flutter ( 9664): 成功码:0测量返回值{code: 0, data: }
+I/flutter ( 9664): 设备列表[{deviceColor: 0, macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0, deviceIndex: 0, imageIndex: 0}]
+I/flutter ( 9664): 设备列表[{deviceColor: 0, macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0, deviceIndex: 0, imageIndex: 0}]
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(3)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(3)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(3)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(3)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(3)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter ( 9664): ===== onListening connectState ==== 2
+I/flutter ( 9664): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter ( 9664): ===== onListening getDeviceFeature
+I/flutter ( 9664): ===== onListening queryDeviceMCU
+I/flutter ( 9664): ===== onListening queryDeviceModel
+I/flutter ( 9664): ===== onListening end
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter ( 9664): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter ( 9664): ===== onListening connectState ==== 2
+I/flutter ( 9664): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter ( 9664): ===== onListening getDeviceFeature
+I/flutter ( 9664): ===== onListening queryDeviceMCU
+I/flutter ( 9664): ===== onListening queryDeviceModel
+I/flutter ( 9664): ===== onListening end
+D/FlutterJNI(10579): Beginning load of flutter...
+D/FlutterJNI(10579): flutter (null) was loaded normally!
+I/flutter (10579): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (10579): The Dart VM service is listening on http://127.0.0.1:42577/zPv8TOQAHiA=/
+D/FlutterRenderer(10579): Width is zero. 0,0
+D/FlutterRenderer(10579): Width is zero. 0,0
+D/FlutterJNI(10579): Sending viewport metrics to the engine.
+D/FlutterJNI(10579): Sending viewport metrics to the engine.
+I/flutter (10579): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10579): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10579): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10579): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10579): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (10579): ===== onListening connectState ==== 2
+I/flutter (10579): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (10579): ===== onListening getDeviceFeature
+I/flutter (10579): ===== onListening queryDeviceMCU
+I/flutter (10579): ===== onListening queryDeviceModel
+I/flutter (10579): ===== onListening end
+I/flutter (10579): 设备列表[{deviceColor: 0, macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0, deviceIndex: 0, imageIndex: 0}]
+D/FlutterJNI(10855): Beginning load of flutter...
+D/FlutterJNI(10855): flutter (null) was loaded normally!
+I/flutter (10855): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (10855): The Dart VM service is listening on http://127.0.0.1:43589/_d_4VLblLkM=/
+D/FlutterRenderer(10855): Width is zero. 0,0
+D/FlutterRenderer(10855): Width is zero. 0,0
+D/FlutterJNI(10855): Sending viewport metrics to the engine.
+D/FlutterJNI(10855): Sending viewport metrics to the engine.
+I/flutter (10855): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10855): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10855): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10855): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (10855): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (10855): ===== onListening connectState ==== 2
+I/flutter (10855): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (10855): ===== onListening getDeviceFeature
+I/flutter (10855): ===== onListening queryDeviceMCU
+I/flutter (10855): ===== onListening queryDeviceModel
+I/flutter (10855): ===== onListening end
+I/flutter (10855): 设备列表[{deviceColor: 0, macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0, deviceIndex: 0, imageIndex: 0}]
+I/flutter (10855): 测量返回值{code: 0, data: }
+I/flutter (10855): 成功码:0测量返回值{code: 0, data: }
+I/flutter (10855): 测量返回值{code: 0, data: }
+I/flutter (10855): 成功码:0测量返回值{code: 0, data: }
+E/Flutter (10855): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=0, tempFloat=0, tempInteger=36, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (10855): ===== onListening ==== (deviceRealTemperature)====(36.0)
+I/flutter (10855): BleEventHandler: Temperature raw=36.0
+D/FlutterJNI(11233): Beginning load of flutter...
+D/FlutterJNI(11233): flutter (null) was loaded normally!
+I/flutter (11233): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (11233): The Dart VM service is listening on http://127.0.0.1:43849/yb6LhFTDP1Q=/
+D/FlutterRenderer(11233): Width is zero. 0,0
+D/FlutterRenderer(11233): Width is zero. 0,0
+D/FlutterJNI(11233): Sending viewport metrics to the engine.
+D/FlutterJNI(11233): Sending viewport metrics to the engine.
+I/flutter (11233): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11233): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11233): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11233): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (11233): ===== onListening connectState ==== 2
+I/flutter (11233): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (11233): ===== onListening getDeviceFeature
+I/flutter (11233): ===== onListening queryDeviceMCU
+I/flutter (11233): ===== onListening queryDeviceModel
+I/flutter (11233): ===== onListening end
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 4, state: 0})
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+E/Flutter (11233): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=0, tempFloat=1, tempInteger=36, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (11233): ===== onListening ==== (deviceRealTemperature)====(36.1)
+I/flutter (11233): BleEventHandler: Temperature raw=36.1
+E/Flutter (11233): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=0, tempFloat=1, tempInteger=36, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (11233): ===== onListening ==== (deviceRealTemperature)====(36.1)
+I/flutter (11233): BleEventHandler: Temperature raw=36.1
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+E/Flutter (11233): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=65, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (11233): ===== onListening ==== (deviceRealBloodGlucose)====(6.5)
+I/flutter (11233): BleEventHandler: BloodGlucose raw=6.5
+I/flutter (11233): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (11233): BleEventHandler: Temperature raw=0.0
+E/Flutter (11233): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=65, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (11233): ===== onListening ==== (deviceRealBloodGlucose)====(6.5)
+I/flutter (11233): BleEventHandler: BloodGlucose raw=6.5
+I/flutter (11233): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (11233): BleEventHandler: Temperature raw=0.0
+E/Flutter (11233): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=65, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (11233): ===== onListening ==== (deviceRealBloodGlucose)====(6.5)
+I/flutter (11233): BleEventHandler: BloodGlucose raw=6.5
+I/flutter (11233): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (11233): BleEventHandler: Temperature raw=0.0
+I/flutter (11233): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 5, state: 1})
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 4, state: 0})
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+E/Flutter (11233): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=64, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (11233): ===== onListening ==== (deviceRealBloodGlucose)====(6.4)
+I/flutter (11233): BleEventHandler: BloodGlucose raw=6.4
+I/flutter (11233): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (11233): BleEventHandler: Temperature raw=0.0
+E/Flutter (11233): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=64, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (11233): ===== onListening ==== (deviceRealBloodGlucose)====(6.4)
+I/flutter (11233): BleEventHandler: BloodGlucose raw=6.4
+I/flutter (11233): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (11233): BleEventHandler: Temperature raw=0.0
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11233): 测量返回值{code: 0, data: }
+I/flutter (11233): 成功码:0测量返回值{code: 0, data: }
+E/Flutter (11233): onRealDataResponse: {code=0, dataType=1536, sportStep=2704, sportDistance=1912, sportCalorie=122},1536
+I/flutter (11233): ===== onListening ==== (deviceRealStep)====({distance: 1912, step: 2704, calories: 122})
+I/flutter (11233): BleEventHandler: Steps raw={distance: 1912, step: 2704, calories: 122}
+E/Flutter (11233): onRealDataResponse: {heartValue=85, code=0, dataType=1537},1537
+I/flutter (11233): ===== onListening ==== (deviceRealHeartRate)====(85)
+I/flutter (11233): BleEventHandler: HeartRate raw=85
+I/flutter (11233): 设备列表[{deviceColor: 0, macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0, deviceIndex: 0, imageIndex: 0}]
+D/FlutterJNI(11896): Beginning load of flutter...
+D/FlutterJNI(11896): flutter (null) was loaded normally!
+I/flutter (11896): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (11896): The Dart VM service is listening on http://127.0.0.1:39403/v4bY_JoNCRQ=/
+D/FlutterRenderer(11896): Width is zero. 0,0
+D/FlutterRenderer(11896): Width is zero. 0,0
+D/FlutterJNI(11896): Sending viewport metrics to the engine.
+D/FlutterJNI(11896): Sending viewport metrics to the engine.
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (11896): ===== onListening connectState ==== 2
+I/flutter (11896): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (11896): ===== onListening getDeviceFeature
+I/flutter (11896): ===== onListening queryDeviceMCU
+I/flutter (11896): ===== onListening queryDeviceModel
+I/flutter (11896): ===== onListening end
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (11896): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (11896): ===== onListening connectState ==== 2
+I/flutter (11896): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (11896): ===== onListening getDeviceFeature
+I/flutter (11896): ===== onListening queryDeviceMCU
+I/flutter (11896): ===== onListening queryDeviceModel
+I/flutter (11896): ===== onListening end
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 5, state: 2})
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 4, state: 0})
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 2, state: 2})
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+I/flutter (11896): 测量返回值{code: 0, data: }
+I/flutter (11896): 成功码:0测量返回值{code: 0, data: }
+D/FlutterJNI(12361): Beginning load of flutter...
+D/FlutterJNI(12361): flutter (null) was loaded normally!
+I/flutter (12361): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (12361): The Dart VM service is listening on http://127.0.0.1:44839/69X9Git-9jM=/
+D/FlutterRenderer(12361): Width is zero. 0,0
+D/FlutterRenderer(12361): Width is zero. 0,0
+D/FlutterJNI(12361): Sending viewport metrics to the engine.
+D/FlutterJNI(12361): Sending viewport metrics to the engine.
+I/flutter (12361): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12361): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12361): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12361): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12361): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (12361): ===== onListening connectState ==== 2
+I/flutter (12361): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (12361): ===== onListening getDeviceFeature
+I/flutter (12361): ===== onListening queryDeviceMCU
+I/flutter (12361): ===== onListening queryDeviceModel
+I/flutter (12361): ===== onListening end
+I/flutter (12361): 测量返回值{code: 0, data: }
+I/flutter (12361): 成功码:0测量返回值{code: 0, data: }
+E/Flutter (12361): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=62, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (12361): ===== onListening ==== (deviceRealBloodGlucose)====(6.2)
+I/flutter (12361): BleEventHandler: BloodGlucose raw=6.2
+I/flutter (12361): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (12361): BleEventHandler: Temperature raw=0.0
+E/Flutter (12361): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=62, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (12361): ===== onListening ==== (deviceRealBloodGlucose)====(6.2)
+I/flutter (12361): BleEventHandler: BloodGlucose raw=6.2
+I/flutter (12361): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (12361): BleEventHandler: Temperature raw=0.0
+E/Flutter (12361): onRealDataResponse: {SBP=0, wearingState=1, code=0, bloodSugar=62, tempFloat=0, tempInteger=0, cholesterolFloat=0, dataType=1546, ppi=0, electricity=0, dis=0, cholesterolInteger=0, kcal=0, bloodOxygen=0, DBP=0, respirationRate=0, heartRate=0, step=0, uricAcid=0},1546
+I/flutter (12361): ===== onListening ==== (deviceRealBloodGlucose)====(6.2)
+I/flutter (12361): BleEventHandler: BloodGlucose raw=6.2
+I/flutter (12361): ===== onListening ==== (deviceRealTemperature)====(0.0)
+I/flutter (12361): BleEventHandler: Temperature raw=0.0
+I/flutter (12361): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 5, state: 1})
+I/flutter (12361): 测量返回值{code: 0, data: }
+I/flutter (12361): 成功码:0测量返回值{code: 0, data: }
+I/flutter (12361): 测量返回值{code: 0, data: }
+I/flutter (12361): 成功码:0测量返回值{code: 0, data: }
+I/flutter (12361): 测量返回值{code: 0, data: }
+I/flutter (12361): 成功码:0测量返回值{code: 0, data: }
+E/Flutter (12361): onRealDataResponse: {code=0, dataType=1536, sportStep=2704, sportDistance=1912, sportCalorie=122},1536
+I/flutter (12361): ===== onListening ==== (deviceRealStep)====({distance: 1912, step: 2704, calories: 122})
+I/flutter (12361): BleEventHandler: Steps raw={distance: 1912, step: 2704, calories: 122}
+I/flutter (12361): 设备列表[{deviceColor: 0, macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0, deviceIndex: 0, imageIndex: 0}]
+D/FlutterJNI(12779): Beginning load of flutter...
+D/FlutterJNI(12779): flutter (null) was loaded normally!
+I/flutter (12779): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (12779): The Dart VM service is listening on http://127.0.0.1:45163/aV_BfKuSs_A=/
+D/FlutterRenderer(12779): Width is zero. 0,0
+D/FlutterRenderer(12779): Width is zero. 0,0
+D/FlutterJNI(12779): Sending viewport metrics to the engine.
+D/FlutterJNI(12779): Sending viewport metrics to the engine.
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (12779): ===== onListening connectState ==== 2
+I/flutter (12779): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (12779): ===== onListening getDeviceFeature
+I/flutter (12779): ===== onListening queryDeviceMCU
+I/flutter (12779): ===== onListening queryDeviceModel
+I/flutter (12779): ===== onListening end
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(4)
+I/flutter (12779): 设备列表[{deviceColor: 0, macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: -70, deviceIndex: 0, imageIndex: 0}]
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (12779): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (12779): ===== onListening connectState ==== 2
+I/flutter (12779): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (12779): ===== onListening getDeviceFeature
+I/flutter (12779): ===== onListening queryDeviceMCU
+I/flutter (12779): ===== onListening queryDeviceModel
+I/flutter (12779): ===== onListening end
+D/FlutterJNI(13354): Beginning load of flutter...
+D/FlutterJNI(13354): flutter (null) was loaded normally!
+I/flutter (13354): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (13354): The Dart VM service is listening on http://127.0.0.1:45061/A08WjUfU7Zg=/
+D/FlutterRenderer(13354): Width is zero. 0,0
+D/FlutterRenderer(13354): Width is zero. 0,0
+D/FlutterJNI(13354): Sending viewport metrics to the engine.
+D/FlutterJNI(13354): Sending viewport metrics to the engine.
+I/flutter (13354): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13354): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13354): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13354): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13354): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (13354): ===== onListening connectState ==== 2
+I/flutter (13354): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (13354): ===== onListening getDeviceFeature
+I/flutter (13354): ===== onListening queryDeviceMCU
+I/flutter (13354): ===== onListening queryDeviceModel
+I/flutter (13354): ===== onListening end
+I/flutter (13354): 测量返回值{code: 0, data: }
+I/flutter (13354): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13354): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 5, state: 2})
+I/flutter (13354): 测量返回值{code: 0, data: }
+I/flutter (13354): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13354): 测量返回值{code: 0, data: }
+I/flutter (13354): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13354): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 4, state: 2})
+I/flutter (13354): 测量返回值{code: 0, data: }
+I/flutter (13354): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13354): 测量返回值{code: 0, data: }
+I/flutter (13354): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13354): 测量返回值{code: 0, data: }
+I/flutter (13354): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13354): 睡眠
+D/FlutterJNI(13880): Beginning load of flutter...
+D/FlutterJNI(13880): flutter (null) was loaded normally!
+I/flutter (13880): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (13880): The Dart VM service is listening on http://127.0.0.1:46549/705vwDL2wio=/
+D/FlutterRenderer(13880): Width is zero. 0,0
+D/FlutterRenderer(13880): Width is zero. 0,0
+D/FlutterJNI(13880): Sending viewport metrics to the engine.
+D/FlutterJNI(13880): Sending viewport metrics to the engine.
+I/flutter (13880): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13880): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13880): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13880): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (13880): ===== onListening ==== (bluetoothStateChange, deviceInfo)====(2, {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0})
+I/flutter (13880): ===== onListening connectState ==== 2
+I/flutter (13880): ===== onListening deviceInfo ==== {macAddress: DF:A0:CE:2D:A2:AE, deviceIdentifier: DF:A0:CE:2D:A2:AE, name: R30 A2AE, rssiValue: 0}
+I/flutter (13880): ===== onListening getDeviceFeature
+I/flutter (13880): ===== onListening queryDeviceMCU
+I/flutter (13880): ===== onListening queryDeviceModel
+I/flutter (13880): ===== onListening end
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13880): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 2, state: 2})
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13880): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 4, state: 2})
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13880): ===== onListening ==== (deviceHealthDataMeasureStateChange)====({healthDataType: 5, state: 2})
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+I/flutter (13880): 测量返回值{code: 0, data: }
+I/flutter (13880): 成功码:0测量返回值{code: 0, data: }
+D/FlutterJNI(15045): Beginning load of flutter...
+D/FlutterJNI(15045): flutter (null) was loaded normally!
+I/flutter (15045): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+I/flutter (15045): The Dart VM service is listening on http://127.0.0.1:46485/7Xy994Tvv18=/
+D/FlutterRenderer(15045): Width is zero. 0,0
+D/FlutterRenderer(15045): Width is zero. 0,0
+D/FlutterJNI(15045): Sending viewport metrics to the engine.
+D/FlutterJNI(15045): Sending viewport metrics to the engine.
+I/flutter (15045): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (15045): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (15045): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (15045): ===== onListening ==== (bluetoothStateChange)====(1)
+I/flutter (15045): ===== onListening ==== (bluetoothStateChange, de
