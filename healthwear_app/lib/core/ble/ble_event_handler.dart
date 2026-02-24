@@ -149,8 +149,8 @@ class BleEventHandler {
       
       debugPrint("BleEventHandler: MeasureStateChange type=$healthDataType state=$state values=$values");
       
-      // state: 0 = success, 1 = fail, 2 = measuring
-      if (state == 0 && values != null && values.isNotEmpty) {
+      // state: 1 = success, 0 = fail, 2 = measuring (or stopped)
+      if (state == 1 && values != null && values.isNotEmpty) {
          // Map the final measurement value to the respective real-time callback
          // healthDataType values: 0x00 HR, 0x01 BP, 0x02 SpO2, 0x04 Temp, 0x05 Glucose
          if (healthDataType == 0x00) {

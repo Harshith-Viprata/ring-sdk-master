@@ -35,10 +35,14 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _startRealtime());
   }
 
-  // 15 seconds to reach 100%
   void _startSimulatedProgress(
-      void Function(String?) setProgress, Timer? targetTimer, VoidCallback onFinish) {
+      void Function(String?) setProgress, Timer? targetTimer, VoidCallback onFinish) async {
     targetTimer?.cancel();
+    
+    // Pause background telemetry globally for all sensors on this page so manual queries aren't aborted natively!
+    await BleManager.instance.setRealTimeUpload(false, DeviceRealTimeDataType.combinedData);
+    await Future.delayed(const Duration(milliseconds: 200));
+
     int elapsed = 0;
     const totalMs = 45000; // Increased to 45 seconds to allow measurement to finish
     const intervalMs = 100;
@@ -55,6 +59,7 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
         timer.cancel();
         if (mounted) {
           setProgress(null);
+          BleManager.instance.setRealTimeUpload(true, DeviceRealTimeDataType.combinedData);
           onFinish();
         }
       }
@@ -110,7 +115,6 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                     isMeasuring: _spo2Progress != null,
                     progressText: _spo2Progress,
                     onMeasure: () async {
-                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bloodOxygen);
                       _startSimulatedProgress(
                         (p) => setState(() => _spo2Progress = p),
                         _spo2Timer,
@@ -119,6 +123,9 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                           ref.refresh(bloodOxygenHistoryProvider);
                         },
                       );
+                      // Start measure explicitly after toggling streams (which happens internally above)
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bloodOxygen);
                     },
                     historyRows: bpoHistory.when(
                       data: (r) => r.take(5).map((rec) =>
@@ -147,7 +154,6 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                     isMeasuring: _bpProgress != null,
                     progressText: _bpProgress,
                     onMeasure: () async {
-                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bloodPressure);
                       _startSimulatedProgress(
                         (p) => setState(() => _bpProgress = p),
                         _bpTimer,
@@ -156,6 +162,8 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                           ref.refresh(bloodPressureHistoryProvider);
                         },
                       );
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bloodPressure);
                     },
                     historyRows: bpHistory.when(
                       data: (r) => r.take(5).map((rec) =>
@@ -183,7 +191,6 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                     isMeasuring: _tempProgress != null,
                     progressText: _tempProgress,
                     onMeasure: () async {
-                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bodyTemperature);
                       _startSimulatedProgress(
                         (p) => setState(() => _tempProgress = p),
                         _tempTimer,
@@ -192,6 +199,8 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                           ref.refresh(temperatureHistoryProvider);
                         },
                       );
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bodyTemperature);
                     },
                     historyRows: tempHistory.when(
                       data: (r) => r.take(5).map((rec) =>
@@ -219,7 +228,6 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                     isMeasuring: _bgProgress != null,
                     progressText: _bgProgress,
                     onMeasure: () async {
-                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bloodGlucose);
                       _startSimulatedProgress(
                         (p) => setState(() => _bgProgress = p),
                         _bgTimer,
@@ -228,6 +236,8 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
                           // ref.refresh(bloodGlucoseHistoryProvider);
                         },
                       );
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.bloodGlucose);
                     },
                     historyRows: bgHistory.when(
                       data: (r) => [], // We will hook up BG history parsing later

@@ -169,7 +169,7 @@ public class YcProductPluginRealData {
                                 });
                             }
 
-                            if (tempFloat != null && tempInteger != null && tempFloat != 0x0F) {
+                            if (tempFloat != null && tempInteger != null && tempFloat != 0x0F && tempInteger > 0) {
                                 String temperature = tempInteger + "." + tempFloat;
                                 HashMap temperatureMap = new HashMap();
                                 temperatureMap.put(YcProductPluginFlutterType.NativeEventType.deviceRealTemperature, temperature);
@@ -177,6 +177,7 @@ public class YcProductPluginRealData {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
+                                        Log.e("Flutter", "Sending Temp: " + temperatureMap);
                                         if (!YcProductPlugin.isAppInBackground) eventSink.success(temperatureMap);
                                     }
                                 });
@@ -217,13 +218,14 @@ public class YcProductPluginRealData {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
+                                        Log.e("Flutter", "Sending BP: " + bloodPressureMap);
                                         if (!YcProductPlugin.isAppInBackground) eventSink.success(bloodPressureMap);
                                     }
                                 });
                             }
 
                             Integer step = (Integer) hashMap.get("step");
-                            if (step != null && step > 0) {
+                            if (step != null && step >= 0) {
                                 HashMap stepInfo = new HashMap();
                                 stepInfo.put("step", step);
                                 stepInfo.put("distance", hashMap.get("dis") != null ? hashMap.get("dis") : 0);

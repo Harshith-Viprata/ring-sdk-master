@@ -47,6 +47,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       // Since real-time streams require physical walking to trigger an initial ping,
       // we must rely on history.
       ref.invalidate(stepHistoryProvider);
+
+      // --- BUG #1 & BUG #6: Activate real-time tracking + triggers ---
+      final isConnected = ref.read(bleStateProvider) == BluetoothState.connected;
+      if (isConnected) {
+        try {
+          // Enable comprehensive background real-time tracking (broadcast streams)
+          await BleManager.instance.setRealTimeUpload(true, DeviceRealTimeDataType.combinedData);
+
+          // Force the ring's optical sensors to actually turn on and begin continuous tracking
+          if (feature?.isSupportHeartRate ?? false) {
+            await BleManager.instance.setDeviceHealthMonitoringMode(enable: true, interval: 5);
+          }
+          if (feature?.isSupportTemperature ?? false) {
+             await BleManager.instance.setDeviceTemperatureMonitoringMode(enable: true, interval: 5);
+          }
+        } catch (e) {
+          debugPrint('Error starting real-time streams: $e');
+        }
+      }
     });
     
     _refreshTimer?.cancel();
@@ -232,7 +251,7 @@ class _HomeTab extends ConsumerWidget {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      if (feature?.isSupportHeartRate ?? true)
+                      if (feature?.isSupportHeartRate ?? false)
                         ValueListenableBuilder<int?>(
                           valueListenable: BleEventHandler.instance.heartRateNotifier,
                           builder: (context, liveBpm, _) {
@@ -248,9 +267,10 @@ class _HomeTab extends ConsumerWidget {
                             );
                           },
                         ),
-                      if (feature?.isSupportStep ?? true)
+                      if (feature?.isSupportStep ?? false)
                         Consumer(
                           builder: (context, currentRef, _) {
+                            final liveSteps = currentRef.watch(stepsProvider)?.steps ?? 0;
                             final historyAsync = currentRef.watch(stepHistoryProvider);
                             final totalSteps = historyAsync.maybeWhen(
                               data: (records) {
@@ -267,9 +287,11 @@ class _HomeTab extends ConsumerWidget {
                               },
                               orElse: () => 0,
                             );
+                            
+                            final displaySteps = liveSteps > 0 ? liveSteps : totalSteps;
                             return MetricCard(
                               title: 'Steps',
-                              value: totalSteps > 0 ? '$totalSteps' : '--',
+                              value: displaySteps > 0 ? '$displaySteps' : '--',
                               unit: '',
                               icon: Icons.directions_walk_rounded,
                               color: AppColors.steps,
@@ -278,30 +300,30 @@ class _HomeTab extends ConsumerWidget {
                             );
                           }
                         ),
-                      if (feature?.isSupportBloodOxygen ?? true)
+                      if (feature?.isSupportBloodOxygen ?? false)
                         MetricCard(
                           title: 'Blood Oxygen',
-                          value: spo2 != null ? '${spo2.spo2}' : '--',
+                          value: spo2 != null && spo2.spo2 > 0 ? '${spo2.spo2}' : '--',
                           unit: '%',
                           icon: Icons.water_drop_rounded,
                           color: AppColors.bloodOxygen,
                           onTap: () => Navigator.push(context,
                               MaterialPageRoute(builder: (_) => const MetricsScreen())),
                         ),
-                      if (feature?.isSupportBloodPressure ?? true)
+                      if (feature?.isSupportBloodPressure ?? false)
                         MetricCard(
                           title: 'Blood Pressure',
-                          value: bp != null ? '${bp.systolic}/${bp.diastolic}' : '--',
+                          value: bp != null && bp.systolic > 0 ? '${bp.systolic}/${bp.diastolic}' : '--',
                           unit: 'mmHg',
                           icon: Icons.bloodtype_rounded,
                           color: AppColors.bloodPressure,
                           onTap: () => Navigator.push(context,
                               MaterialPageRoute(builder: (_) => const MetricsScreen())),
                         ),
-                      if (feature?.isSupportBloodGlucose ?? true)
+                      if (feature?.isSupportBloodGlucose ?? false)
                         MetricCard(
                           title: 'Blood Glucose',
-                          value: ref.watch(bloodGlucoseProvider) != null 
+                          value: ref.watch(bloodGlucoseProvider) != null && ref.watch(bloodGlucoseProvider)!.mmolL > 0
                                  ? ref.watch(bloodGlucoseProvider)!.mmolL.toStringAsFixed(1) 
                                  : '--',
                           unit: 'mmol/L',
@@ -310,17 +332,17 @@ class _HomeTab extends ConsumerWidget {
                           onTap: () => Navigator.push(context,
                               MaterialPageRoute(builder: (_) => const MetricsScreen())),
                         ),
-                      if (feature?.isSupportTemperature ?? true)
+                      if (feature?.isSupportTemperature ?? false)
                         MetricCard(
                           title: 'Temperature',
-                          value: temp != null ? temp.celsius.toStringAsFixed(1) : '--',
+                          value: temp != null && temp.celsius > 0 ? temp.celsius.toStringAsFixed(1) : '--',
                           unit: '°C',
                           icon: Icons.thermostat_rounded,
                           color: AppColors.temperature,
                           onTap: () => Navigator.push(context,
                               MaterialPageRoute(builder: (_) => const MetricsScreen())),
                         ),
-                      if (feature?.isSupportPressure ?? true)
+                      if (feature?.isSupportPressure ?? false)
                         MetricCard(
                           title: 'Stress',
                           value: stress != null ? '${stress.stressLevel}' : '--',
@@ -334,7 +356,7 @@ class _HomeTab extends ConsumerWidget {
                   ),
                 const SizedBox(height: 16),
                 // ECG banner (if supported)
-                if (feature?.isSupportRealTimeECG ?? true)
+                if (feature?.isSupportRealTimeECG ?? false)
                   _ECGBanner(
                     onTap: () => Navigator.push(context,
                         MaterialPageRoute(builder: (_) => const EcgScreen())),

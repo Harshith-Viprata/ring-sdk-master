@@ -153,6 +153,16 @@ class BleManager {
     await _plugin.realTimeDataUpload(enable, dataType: type);
   }
 
+  /// Enable/disable continuous hardware health monitoring (turns on the optical sensors)
+  Future<void> setDeviceHealthMonitoringMode({required bool enable, int interval = 10}) async {
+    await _plugin.setDeviceHealthMonitoringMode(isEnable: enable, interval: interval);
+  }
+
+  /// Enable temperature continuous monitoring
+  Future<void> setDeviceTemperatureMonitoringMode({required bool enable, int interval = 10}) async {
+    await _plugin.setDeviceTemperatureMonitoringMode(isEnable: enable, interval: interval);
+  }
+
   // ─── Historical Health Data ──────────────────────────────────────────────
 
   /// Fetch historical health data for a given type.

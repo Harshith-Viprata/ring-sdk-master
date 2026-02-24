@@ -37,8 +37,8 @@ public class YcProductPluginDeviceControl {
                 Log.e("deviceToApp", "onDataResponse: " + hashMap);
 
                 if (hashMap != null) {
-
-                    if (0 == i) {
+                    // `i == 2` means actively measuring, `i == 0` means success. We must allow both for Measurements.
+                    if (0 == i || (int) hashMap.get("dataType") == Constants.DATATYPE.DeviceMeasurementResult) {
                         int dataType = (int) hashMap.get("dataType");
                         switch (dataType) {
                             case Constants.DATATYPE.DeviceTakePhoto://相机拍照控制

@@ -44,6 +44,11 @@ class _HeartRateScreenState extends ConsumerState<HeartRateScreen> {
 
   void _startMeasure() async {
     if (_isMeasuring) return;
+    
+    // Pause background continuous telemetry to prevent the device from aborting our manual request!
+    await BleManager.instance.setRealTimeUpload(false, DeviceRealTimeDataType.combinedData);
+    await Future.delayed(const Duration(milliseconds: 200));
+
     bool ok = await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.heartRate);
     if (!ok) {
       EasyLoading.showError('Failed to start measure');
@@ -74,6 +79,8 @@ class _HeartRateScreenState extends ConsumerState<HeartRateScreen> {
             _progress = null;
           });
           BleManager.instance.stopMeasure(DeviceAppControlMeasureHealthDataType.heartRate);
+          // Restore background continuous telemetry
+          BleManager.instance.setRealTimeUpload(true, DeviceRealTimeDataType.combinedData);
           ref.refresh(heartRateHistoryProvider);
         }
       }
