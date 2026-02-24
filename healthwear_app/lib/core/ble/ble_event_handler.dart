@@ -7,6 +7,9 @@ class BleEventHandler {
   BleEventHandler._();
   static final BleEventHandler instance = BleEventHandler._();
 
+  // --- Reactive UI States ---
+  final ValueNotifier<int?> heartRateNotifier = ValueNotifier<int?>(null);
+
   // --- Typed callbacks ---
   void Function(int state)? onBluetoothStateChange;
   void Function(Map info)? onDeviceInfo;
@@ -49,7 +52,14 @@ class BleEventHandler {
       final raw = event[NativeEventType.deviceRealHeartRate];
       debugPrint("BleEventHandler: HeartRate raw=$raw");
       final map = raw is Map ? raw : {'value': raw};
-      onHeartRate?.call(RealTimeHeartRate.fromMap(map));
+      final hrData = RealTimeHeartRate.fromMap(map);
+      
+      // Update global reactive hook for UI
+      if (hrData.bpm > 0) {
+        heartRateNotifier.value = hrData.bpm;
+      }
+      
+      onHeartRate?.call(hrData);
     }
 
     // ── Real-time Blood Oxygen ─────────────────────────────────────────────
@@ -132,8 +142,30 @@ class BleEventHandler {
 
     // -- Measurement State Change --
     if (event.containsKey(NativeEventType.deviceHealthDataMeasureStateChange)) {
-      // Log for debugging: {healthDataType: 4, state: 0}
-      // state: 0=start, 1=end, 2=success, 3=fail (varies by protocol)
+      final map = event[NativeEventType.deviceHealthDataMeasureStateChange] as Map;
+      final int state = map['state'] as int? ?? -1;
+      final int healthDataType = map['healthDataType'] as int? ?? -1;
+      final List<dynamic>? values = map['values'] as List<dynamic>?;
+      
+      debugPrint("BleEventHandler: MeasureStateChange type=$healthDataType state=$state values=$values");
+      
+      // state: 0 = success, 1 = fail, 2 = measuring
+      if (state == 0 && values != null && values.isNotEmpty) {
+         // Map the final measurement value to the respective real-time callback
+         // healthDataType values: 0x00 HR, 0x01 BP, 0x02 SpO2, 0x04 Temp, 0x05 Glucose
+         if (healthDataType == 0x00) {
+            onHeartRate?.call(RealTimeHeartRate.fromMap({'value': values[0] as int}));
+         } else if (healthDataType == 0x01 && values.length >= 2) {
+            onBloodPressure?.call(RealTimeBloodPressure.fromMap({'systolicBloodPressure': values[0], 'diastolicBloodPressure': values[1]}));
+         } else if (healthDataType == 0x02) {
+            onBloodOxygen?.call(RealTimeBloodOxygen.fromMap({'bloodOxygenValue': values[0] as int}));
+         } else if (healthDataType == 0x04 && values.length >= 2) {
+            onTemperature?.call(RealTimeTemperature.fromMap({'value': "${values[0]}.${values[1]}"}));
+         } else if (healthDataType == 0x05) {
+            // Blood glucose is typically represented as a single integer (e.g. 56 -> 5.6 mmol/L)
+            onBloodGlucose?.call(RealTimeBloodGlucose.fromMap({'value': "${(values[0] as int) / 10}.${(values[0] as int) % 10}"}));
+         }
+      }
     }
 
     // -- Debug: Log any unhandled keys --

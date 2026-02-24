@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yc_product_plugin/yc_product_plugin.dart';
 import '../../core/ble/ble_manager.dart';
+import '../../core/ble/ble_event_handler.dart';
 import '../../core/providers/ble_provider.dart';
 import '../../shared/theme/app_theme.dart';
 import '../../shared/widgets/metric_card.dart';
@@ -41,32 +42,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final feature = ref.read(connectedDeviceProvider)?.feature;
     
     // Initial sync of all supported metrics
-    // We call them sequentially with a small delay to ensure the device handles each request
     Future.microtask(() async {
-      final ble = BleManager.instance;
-      
-      // Step is usually always supported and a good "keep-alive"
-      await ble.setRealTimeUpload(true, DeviceRealTimeDataType.step);
-      
-      if (feature?.isSupportHeartRate ?? true) {
-        await Future.delayed(const Duration(milliseconds: 300));
-        await ble.setRealTimeUpload(true, DeviceRealTimeDataType.heartRate);
-      }
-      
-      if (feature?.isSupportBloodOxygen ?? true) {
-        await Future.delayed(const Duration(milliseconds: 300));
-        await ble.setRealTimeUpload(true, DeviceRealTimeDataType.bloodOxygen);
-      }
-      
-      if (feature?.isSupportBloodPressure ?? true) {
-        await Future.delayed(const Duration(milliseconds: 300));
-        await ble.setRealTimeUpload(true, DeviceRealTimeDataType.bloodPressure);
-      }
-      
-      if (feature?.isSupportTemperature ?? true) {
-        await Future.delayed(const Duration(milliseconds: 300));
-        await ble.setRealTimeUpload(true, DeviceRealTimeDataType.combinedData);
-      }
+      // The user wants step data on connection but NO continuous background stream.
+      // Since real-time streams require physical walking to trigger an initial ping,
+      // we must rely on history.
+      ref.invalidate(stepHistoryProvider);
     });
     
     _refreshTimer?.cancel();
@@ -165,7 +145,6 @@ class _HomeTab extends ConsumerWidget {
     final hr = ref.watch(heartRateProvider);
     final spo2 = ref.watch(bloodOxygenProvider);
     final temp = ref.watch(temperatureProvider);
-    final steps = ref.watch(stepsProvider);
     final bp = ref.watch(bloodPressureProvider);
     final stress = ref.watch(pressureProvider);
 
@@ -254,24 +233,39 @@ class _HomeTab extends ConsumerWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       if (feature?.isSupportHeartRate ?? true)
-                        MetricCard(
-                          title: 'Heart Rate',
-                          value: hr != null ? '${hr.bpm}' : '--',
-                          unit: 'BPM',
-                          icon: Icons.favorite_rounded,
-                          color: AppColors.heartRate,
-                          onTap: () => Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => const HeartRateScreen())),
+                        ValueListenableBuilder<int?>(
+                          valueListenable: BleEventHandler.instance.heartRateNotifier,
+                          builder: (context, liveBpm, _) {
+                            final displayBpm = liveBpm ?? hr?.bpm;
+                            return MetricCard(
+                              title: 'Heart Rate',
+                              value: displayBpm != null && displayBpm > 0 ? '$displayBpm' : '--',
+                              unit: 'BPM',
+                              icon: Icons.favorite_rounded,
+                              color: AppColors.heartRate,
+                              onTap: () => Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) => const HeartRateScreen())),
+                            );
+                          },
                         ),
                       if (feature?.isSupportStep ?? true)
-                        MetricCard(
-                          title: 'Steps',
-                          value: steps != null ? '${steps.steps}' : '--',
-                          unit: '',
-                          icon: Icons.directions_walk_rounded,
-                          color: AppColors.steps,
-                          onTap: () => Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => const ActivityScreen())),
+                        Consumer(
+                          builder: (context, currentRef, _) {
+                            final historyAsync = currentRef.watch(stepHistoryProvider);
+                            final totalSteps = historyAsync.maybeWhen(
+                              data: (records) => records.isNotEmpty ? records.last.steps : 0,
+                              orElse: () => 0,
+                            );
+                            return MetricCard(
+                              title: 'Steps',
+                              value: totalSteps > 0 ? '$totalSteps' : '--',
+                              unit: '',
+                              icon: Icons.directions_walk_rounded,
+                              color: AppColors.steps,
+                              onTap: () => Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) => const ActivityScreen())),
+                            );
+                          }
                         ),
                       if (feature?.isSupportBloodOxygen ?? true)
                         MetricCard(

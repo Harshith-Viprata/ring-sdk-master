@@ -21,6 +21,8 @@ import io.flutter.plugin.common.MethodChannel.Result;
 /** YcProductPlugin */
 public class YcProductPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler {
 
+  public static boolean isAppInBackground = false;
+
   private MethodChannel methodChannel;
   private EventChannel eventChannel;
 
@@ -57,7 +59,7 @@ public class YcProductPlugin implements FlutterPlugin, ActivityAware, MethodCall
 
     // 初始化
     context = flutterPluginBinding.getApplicationContext();
-    handler = new Handler();
+    handler = new Handler(android.os.Looper.getMainLooper());
 
 
     // methodChannel
@@ -120,6 +122,36 @@ public class YcProductPlugin implements FlutterPlugin, ActivityAware, MethodCall
 
 
     switch (method) {
+      case "pauseEventChannel":
+        isAppInBackground = true;
+        result.success(null);
+        break;
+
+      case "resumeEventChannel":
+        isAppInBackground = false;
+        result.success(null);
+        break;
+
+      case "shutdownBle":
+        Log.d("MARK-", "App closing, shutting down BLE gracefully.");
+        com.yucheng.ycbtsdk.YCBTClient.disconnectBle();
+        try {
+            android.bluetooth.BluetoothManager manager = (android.bluetooth.BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+            if (manager != null) {
+                java.util.List<android.bluetooth.BluetoothDevice> connectedOSDevices = manager.getConnectedDevices(android.bluetooth.BluetoothProfile.GATT);
+                for (android.bluetooth.BluetoothDevice osDevice : connectedOSDevices) {
+                    android.bluetooth.BluetoothGatt tempGatt = osDevice.connectGatt(context, false, new android.bluetooth.BluetoothGattCallback() {});
+                    if (tempGatt != null) {
+                        tempGatt.disconnect();
+                        tempGatt.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("MARK-", "GATT force close error: " + e.getMessage());
+        }
+        result.success(null);
+        break;
 
       // MARK: - SDK 初始化
       case "getPlatformVersion":
@@ -161,7 +193,7 @@ public class YcProductPlugin implements FlutterPlugin, ActivityAware, MethodCall
         break;
 
       case "connectDevice":
-        YcProductPluginDevice.connectDevice(arguments, result);
+        YcProductPluginDevice.connectDevice(context, arguments, result);
         break;
 
       case "disconnectDevice":

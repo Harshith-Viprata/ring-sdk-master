@@ -40,7 +40,7 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
       void Function(String?) setProgress, Timer? targetTimer, VoidCallback onFinish) {
     targetTimer?.cancel();
     int elapsed = 0;
-    const totalMs = 15000;
+    const totalMs = 45000; // Increased to 45 seconds to allow measurement to finish
     const intervalMs = 100;
 
     targetTimer = Timer.periodic(const Duration(milliseconds: intervalMs), (timer) {
@@ -62,31 +62,15 @@ class _MetricsScreenState extends ConsumerState<MetricsScreen> {
   }
 
   Future<void> _startRealtime() async {
-    final feature = ref.read(connectedDeviceProvider)?.feature;
-    final ble = BleManager.instance;
-
-    // Sequence through supported features
-    if (feature?.isSupportBloodOxygen ?? true) {
-      await ble.setRealTimeUpload(true, DeviceRealTimeDataType.bloodOxygen);
-      await Future.delayed(const Duration(milliseconds: 200));
-    }
-    if (feature?.isSupportBloodPressure ?? true) {
-      await ble.setRealTimeUpload(true, DeviceRealTimeDataType.bloodPressure);
-      await Future.delayed(const Duration(milliseconds: 200));
-    }
-    if (feature?.isSupportTemperature ?? true) {
-      await ble.setRealTimeUpload(true, DeviceRealTimeDataType.combinedData);
-    }
+    await BleManager.instance.setRealTimeUpload(true, DeviceRealTimeDataType.combinedData);
   }
 
   @override
   void dispose() {
     _spo2Timer?.cancel();
     _bpTimer?.cancel();
+    _tempTimer?.cancel();
     _bgTimer?.cancel();
-    BleManager.instance.setRealTimeUpload(false, DeviceRealTimeDataType.bloodOxygen);
-    BleManager.instance.setRealTimeUpload(false, DeviceRealTimeDataType.bloodPressure);
-    BleManager.instance.setRealTimeUpload(false, DeviceRealTimeDataType.combinedData);
     super.dispose();
   }
 

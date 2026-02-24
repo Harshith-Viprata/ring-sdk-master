@@ -1,13 +1,23 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:yc_product_plugin/yc_product_plugin.dart';
 import '../../core/ble/ble_manager.dart';
-import '../../core/providers/ble_provider.dart';
+import '../../core/ble/ble_event_handler.dart';
 import '../../core/models/health_models.dart';
-import '../../shared/theme/app_theme.dart';
+import '../../core/providers/ble_provider.dart';
+
+const Color kPrimaryColor = Color(0xFFFF6D3A);
+const Color kCardLight = Color(0xFFFFFFFF);
+const Color kCardDark = Color(0xFF1C1C1E);
+const Color kBackgroundLight = Color(0xFFF9FAFB);
+const Color kBackgroundDark = Color(0xFF0F0F0F);
+const Color kTealStatus = Color(0xFF2DD4BF);
+const Color kGrayText = Color(0xFF9CA3AF);
 
 class HeartRateScreen extends ConsumerStatefulWidget {
   const HeartRateScreen({super.key});
@@ -17,34 +27,36 @@ class HeartRateScreen extends ConsumerStatefulWidget {
 }
 
 class _HeartRateScreenState extends ConsumerState<HeartRateScreen> {
-  bool _realTimeActive = false;
+  bool _isMeasuring = false;
   String? _progress;
   Timer? _measureTimer;
+  String _selectedTab = 'Day';
 
   @override
   void initState() {
     super.initState();
-    // Start real-time HR upload
     WidgetsBinding.instance.addPostFrameCallback((_) => _startRealtime());
   }
 
   Future<void> _startRealtime() async {
-    await BleManager.instance
-        .setRealTimeUpload(true, DeviceRealTimeDataType.heartRate);
-    setState(() => _realTimeActive = true);
+    await BleManager.instance.setRealTimeUpload(true, DeviceRealTimeDataType.combinedData);
   }
 
   void _startMeasure() async {
-    if (_progress != null) return;
+    if (_isMeasuring) return;
     bool ok = await BleManager.instance.startMeasure(DeviceAppControlMeasureHealthDataType.heartRate);
     if (!ok) {
-      EasyLoading.showError('Failed to start');
+      EasyLoading.showError('Failed to start measure');
       return;
     }
 
-    setState(() => _progress = '1%');
+    setState(() {
+      _isMeasuring = true;
+      _progress = '0%';
+    });
+
     int elapsed = 0;
-    const totalMs = 15000;
+    const totalMs = 45000; // Increased from 15000 to allow the ring measurement to finish
     const interval = 100;
 
     _measureTimer?.cancel();
@@ -52,16 +64,16 @@ class _HeartRateScreenState extends ConsumerState<HeartRateScreen> {
       elapsed += interval;
       int percentage = ((elapsed / totalMs) * 100).clamp(1, 100).toInt();
 
-      if (mounted) {
-        setState(() => _progress = '$percentage%');
-      }
+      if (mounted) setState(() => _progress = '$percentage%');
 
       if (elapsed >= totalMs) {
         timer.cancel();
         if (mounted) {
-          setState(() => _progress = null);
+          setState(() {
+            _isMeasuring = false;
+            _progress = null;
+          });
           BleManager.instance.stopMeasure(DeviceAppControlMeasureHealthDataType.heartRate);
-          // Explicitly refresh history provider to capture newly saved result
           ref.refresh(heartRateHistoryProvider);
         }
       }
@@ -71,232 +83,380 @@ class _HeartRateScreenState extends ConsumerState<HeartRateScreen> {
   @override
   void dispose() {
     _measureTimer?.cancel();
-    BleManager.instance.setRealTimeUpload(false, DeviceRealTimeDataType.heartRate);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final liveHr = ref.watch(heartRateProvider);
+    final Brightness brightness = Theme.of(context).brightness;
+    final bool isDark = brightness == Brightness.dark;
+    final Color bgColor = isDark ? kBackgroundDark : kBackgroundLight;
+    final Color textColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final Color cardColor = isDark ? kCardDark : kCardLight;
+    
     final historyAsync = ref.watch(heartRateHistoryProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Heart Rate'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Row(
-              children: [
-                Container(
-                  width: 8, height: 8,
-                  decoration: BoxDecoration(
-                    color: _realTimeActive ? AppColors.accentGreen : AppColors.textMuted,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  _realTimeActive ? 'Live' : 'Offline',
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // Live HR card at top
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: _LiveHRCard(
-                bpm: liveHr?.bpm,
-                progress: _progress,
-                onMeasure: _startMeasure,
-              ),
-            ),
-          ),
-          // History chart
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Today\'s History',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: historyAsync.when(
-                data: (records) => _HRChart(records: records),
-                loading: () => const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(40),
-                    child: CircularProgressIndicator(color: AppColors.heartRate),
-                  ),
-                ),
-                error: (e, _) => Center(
-                  child: Text('Failed to load history',
-                      style: const TextStyle(color: AppColors.textSecondary)),
-                ),
-              ),
-            ),
-          ),
-          // Stats row
-          SliverToBoxAdapter(
-            child: historyAsync.when(
-              data: (records) => records.isNotEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _HRStats(records: records),
-                    )
-                  : const SizedBox.shrink(),
-              loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LiveHRCard extends StatelessWidget {
-  final int? bpm;
-  final String? progress;
-  final VoidCallback? onMeasure;
-
-  const _LiveHRCard({this.bpm, this.progress, this.onMeasure});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.heartRate.withOpacity(0.2),
-              AppColors.surface,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.heartRate.withOpacity(0.3)),
-        ),
-        child: Row(
+      backgroundColor: bgColor,
+      body: SafeArea(
+        child: Column(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.chevron_left, color: textColor, size: 28),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Text('HR', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold)),
+                  IconButton(
+                    icon: Icon(Icons.share_outlined, color: textColor, size: 22),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+            
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
                   children: [
-                    Text(
-                      bpm != null ? '$bpm' : '--',
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 64,
-                        fontWeight: FontWeight.w700,
-                        height: 1,
+                    // Tabs & Date Row
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: ['Month', 'Week', 'Day'].map((tab) {
+                              final isSelected = _selectedTab == tab;
+                              return GestureDetector(
+                                onTap: () => setState(() => _selectedTab = tab),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 24),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        tab,
+                                        style: TextStyle(
+                                          color: isSelected ? kPrimaryColor : kGrayText,
+                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      if (isSelected) 
+                                        Container(
+                                          margin: const EdgeInsets.only(top: 4),
+                                          height: 2,
+                                          width: 24,
+                                          color: kPrimaryColor,
+                                        )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today_outlined, color: kPrimaryColor, size: 16),
+                              const SizedBox(width: 4),
+                              Text(
+                                DateFormat('M/d').format(DateTime.now()),
+                                style: const TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10, left: 6),
+
+                    // Chart Section
+                    SizedBox(
+                      height: 180,
+                      child: historyAsync.when(
+                        data: (records) => _HRChart(records: records),
+                        loading: () => const Center(child: CircularProgressIndicator(color: kPrimaryColor)),
+                        error: (_, __) => const Center(child: Text('Chart Error', style: TextStyle(color: kGrayText))),
+                      ),
+                    ),
+                    
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(top: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: ['00:00', '06:00', '12:00', '18:00', '24:00']
+                            .map((t) => Text(t, style: const TextStyle(color: kGrayText, fontSize: 10, letterSpacing: 1.2)))
+                            .toList(),
+                      ),
+                    ),
+
+                    // Big Real-time Number Section
+                    Padding(
+                      padding: const EdgeInsets.only(top: 32, bottom: 40),
+                      child: ValueListenableBuilder<int?>(
+                        valueListenable: BleEventHandler.instance.heartRateNotifier,
+                        builder: (context, liveBpm, _) {
+                          // Provide a fallback to history if stream is silent (using local variable extraction technique)
+                          int fallbackBpm = 0;
+                          if (liveBpm == null) {
+                            historyAsync.whenData((rec) {
+                              if (rec.isNotEmpty) fallbackBpm = rec.last.bpm;
+                            });
+                          }
+                          final activeVal = liveBpm ?? fallbackBpm;
+
+                          return Column(
+                            children: [
+                              Text(
+                                activeVal > 0 ? '$activeVal' : '--',
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                _isMeasuring ? 'LIVE MEASURING $_progress' : 'LIVE BPM',
+                                style: const TextStyle(color: kGrayText, fontSize: 12, letterSpacing: 1.5, fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          );
+                        }
+                      ),
+                    ),
+
+                    // High / Low Stats (Derived from history)
+                    historyAsync.when(
+                      data: (records) {
+                        int highest = records.isEmpty ? 0 : records.map((e) => e.bpm).reduce(max);
+                        int lowest = records.isEmpty ? 0 : records.map((e) => e.bpm).reduce(min);
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _StatColumn(
+                              icon: Icons.arrow_upward_rounded,
+                              val: highest,
+                              label: 'HIGHEST',
+                              textColor: textColor,
+                            ),
+                            const SizedBox(width: 48),
+                            _StatColumn(
+                              icon: Icons.arrow_downward_rounded,
+                              val: lowest,
+                              label: 'LOWEST',
+                              textColor: textColor,
+                            ),
+                          ],
+                        );
+                      },
+                      loading: () => const SizedBox.shrink(),
+                      error: (_,__) => const SizedBox.shrink(),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Measurement Button
+                    ElevatedButton(
+                      onPressed: _startMeasure,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPrimaryColor,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 56),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        elevation: 4,
+                        shadowColor: kPrimaryColor.withOpacity(0.4),
+                      ),
                       child: Text(
-                        'BPM',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 18,
-                        ),
+                        _isMeasuring ? 'Measuring... $_progress' : 'Heart rate measurement',
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
+
+                    const SizedBox(height: 32),
+
+                    // Analysis Card
+                    _CardContainer(
+                      color: cardColor,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.analytics_outlined, color: kPrimaryColor),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Heart rate analysis', style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 15)),
+                              const SizedBox(height: 4),
+                              const Text('Your heart rate is normal.', style: TextStyle(color: kGrayText, fontSize: 13)),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+
+                    // Settings Card
+                    _CardContainer(
+                      color: cardColor,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.settings_outlined, color: kGrayText),
+                          const SizedBox(width: 12),
+                          Text('Health settings', style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 15)),
+                          const Spacer(),
+                          const Icon(Icons.chevron_right, color: kGrayText),
+                        ],
+                      ),
+                    ),
+
+                    // History Section
+                    _CardContainer(
+                      color: cardColor,
+                      padding: const EdgeInsets.only(top: 20, bottom: 8, left: 20, right: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.history_outlined, color: kGrayText),
+                              const SizedBox(width: 12),
+                              Text('history record', style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 15)),
+                              const Spacer(),
+                              const Icon(Icons.expand_more, color: kGrayText),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          historyAsync.when(
+                            data: (records) {
+                              if (records.isEmpty) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                  child: Text('No records for today.', style: TextStyle(color: kGrayText, fontSize: 13)),
+                                );
+                              }
+                              // Sort descending by time
+                              final sorted = List.of(records)
+                                ..sort((a, b) => b.time.compareTo(a.time));
+                              // show up to 5 items to mimic UI
+                              return Column(
+                                children: sorted.take(5).map((r) => _HistoryRow(record: r, textColor: textColor)).toList(),
+                              );
+                            },
+                            loading: () => const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16.0),
+                              child: Center(child: CircularProgressIndicator(color: kPrimaryColor, strokeWidth: 2)),
+                            ),
+                            error: (_,__) => const SizedBox.shrink(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
                   ],
                 ),
-                const SizedBox(height: 6),
-                const Text(
-                  'Heart Rate',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: progress != null ? null : onMeasure,
-                  icon: progress != null
-                      ? const SizedBox(
-                          width: 16, height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textPrimary),
-                        )
-                      : const Icon(Icons.favorite_outline),
-                  label: Text(progress ?? 'Measure Now'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.heartRate.withOpacity(0.2),
-                    foregroundColor: AppColors.heartRate,
-                    elevation: 0,
-                  ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatColumn extends StatelessWidget {
+  final IconData icon;
+  final int val;
+  final String label;
+  final Color textColor;
+  
+  const _StatColumn({required this.icon, required this.val, required this.label, required this.textColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Icon(icon, color: kPrimaryColor, size: 16),
+            const SizedBox(width: 4),
+            Text('$val', style: TextStyle(color: textColor, fontSize: 20, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(color: kGrayText, fontSize: 10, letterSpacing: 1.2)),
+      ],
+    );
+  }
+}
+
+class _CardContainer extends StatelessWidget {
+  final Widget child;
+  final Color color;
+  final EdgeInsetsGeometry padding;
+  
+  const _CardContainer({required this.child, required this.color, this.padding = const EdgeInsets.all(20)});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: padding,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), offset: const Offset(0, 4), blurRadius: 10),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+class _HistoryRow extends StatelessWidget {
+  final HeartRateRecord record;
+  final Color textColor;
+  const _HistoryRow({required this.record, required this.textColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Row(
+        children: [
+          Container(width: 6, height: 6, decoration: const BoxDecoration(color: kPrimaryColor, shape: BoxShape.circle)),
+          const SizedBox(width: 12),
+          Text(DateFormat('HH:mm').format(record.time), style: const TextStyle(color: kGrayText, fontWeight: FontWeight.w500, fontSize: 13)),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('${record.bpm}', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold, height: 1)),
+                const SizedBox(width: 4),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 2),
+                  child: Text('bpm', style: TextStyle(color: kGrayText, fontSize: 11)),
                 ),
               ],
             ),
-            const Spacer(),
-            _HeartbeatIcon(active: bpm != null || progress != null),
-          ],
-        ),
-      );
-}
-
-class _HeartbeatIcon extends StatefulWidget {
-  final bool active;
-  const _HeartbeatIcon({required this.active});
-
-  @override
-  State<_HeartbeatIcon> createState() => _HeartbeatIconState();
-}
-
-class _HeartbeatIconState extends State<_HeartbeatIcon>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _c;
-  late Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _c = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..repeat(reverse: true);
-    _scale = Tween(begin: 0.9, end: 1.1).animate(
-      CurvedAnimation(parent: _c, curve: Curves.easeInOut),
+          ),
+          const SizedBox(width: 32),
+          const Text('Normal', style: TextStyle(color: kTealStatus, fontWeight: FontWeight.w600, fontSize: 12)),
+        ],
+      ),
     );
   }
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _scale,
-        builder: (_, __) => Transform.scale(
-          scale: widget.active ? _scale.value : 1.0,
-          child: Icon(
-            Icons.favorite_rounded,
-            color: widget.active ? AppColors.heartRate : AppColors.textMuted,
-            size: 72,
-          ),
-        ),
-      );
 }
 
+// Chart mimicking the exact SVG shape provided
 class _HRChart extends StatelessWidget {
   final List<HeartRateRecord> records;
   const _HRChart({required this.records});
@@ -304,133 +464,50 @@ class _HRChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (records.isEmpty) {
-      return Container(
-        height: 180,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: const Center(
-          child: Text(
-            'No data recorded today',
-            style: TextStyle(color: AppColors.textSecondary),
-          ),
-        ),
-      );
+      return const Center(child: Text('No chart data', style: TextStyle(color: kGrayText)));
     }
-
-    final spots = records.asMap().entries.map((e) {
-      return FlSpot(e.key.toDouble(), e.value.bpm.toDouble());
+    
+    // Sort chronologically for charting
+    final sorted = List.of(records)..sort((a,b) => a.time.compareTo(b.time));
+    
+    // Create spots, assuming x is a normalized time of day 0..24
+    final spots = sorted.map((r) {
+      double timeVal = r.time.hour + (r.time.minute / 60.0);
+      return FlSpot(timeVal, r.bpm.toDouble());
     }).toList();
 
-    return Container(
-      height: 200,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: LineChart(
-        LineChartData(
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            getDrawingHorizontalLine: (v) => FlLine(
-              color: AppColors.surfaceLight,
-              strokeWidth: 1,
-            ),
-          ),
-          titlesData: FlTitlesData(
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 32,
-                getTitlesWidget: (v, _) => Text(
-                  v.toInt().toString(),
-                  style: const TextStyle(color: AppColors.textMuted, fontSize: 10),
-                ),
-              ),
-            ),
-            bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          ),
-          borderData: FlBorderData(show: false),
-          lineBarsData: [
-            LineChartBarData(
-              spots: spots,
-              isCurved: true,
-              color: AppColors.heartRate,
-              barWidth: 2.5,
-              dotData: const FlDotData(show: false),
-              belowBarData: BarAreaData(
-                show: true,
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.heartRate.withOpacity(0.25),
-                    AppColors.heartRate.withOpacity(0.0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
-          ],
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          getDrawingHorizontalLine: (val) => FlLine(color: kGrayText.withOpacity(0.1), strokeWidth: 1, dashArray: [4, 4]),
         ),
-      ),
-    );
-  }
-}
-
-class _HRStats extends StatelessWidget {
-  final List<HeartRateRecord> records;
-  const _HRStats({required this.records});
-
-  @override
-  Widget build(BuildContext context) {
-    final bpms = records.map((r) => r.bpm).toList();
-    final avg = (bpms.reduce((a, b) => a + b) / bpms.length).round();
-    final min = bpms.reduce((a, b) => a < b ? a : b);
-    final max = bpms.reduce((a, b) => a > b ? a : b);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          _StatItem(label: 'Min', value: '$min', unit: 'BPM', color: AppColors.bloodOxygen),
-          Expanded(child: _StatItem(label: 'Avg', value: '$avg', unit: 'BPM', color: AppColors.heartRate)),
-          _StatItem(label: 'Max', value: '$max', unit: 'BPM', color: AppColors.accentRed),
+        titlesData: FlTitlesData(show: false),
+        borderData: FlBorderData(show: false),
+        minX: 0,
+        maxX: 24, // 0 to 24 hours
+        minY: 40,
+        maxY: 180,
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: kPrimaryColor,
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: const FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              gradient: LinearGradient(
+                colors: [kPrimaryColor.withOpacity(0.6), kPrimaryColor.withOpacity(0.0)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
-}
-
-class _StatItem extends StatelessWidget {
-  final String label, value, unit;
-  final Color color;
-  const _StatItem({required this.label, required this.value, required this.unit, required this.color});
-
-  @override
-  Widget build(BuildContext context) => Expanded(
-        child: Column(
-          children: [
-            Text(value,
-                style: TextStyle(
-                    color: color, fontSize: 24, fontWeight: FontWeight.w700)),
-            Text(unit,
-                style:
-                    const TextStyle(color: AppColors.textMuted, fontSize: 11)),
-            const SizedBox(height: 2),
-            Text(label,
-                style: const TextStyle(
-                    color: AppColors.textSecondary, fontSize: 12)),
-          ],
-        ),
-      );
 }

@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yc_product_plugin/yc_product_plugin.dart';
 
 /// Singleton BLE manager wrapping YcProductPlugin.
@@ -41,6 +42,41 @@ class BleManager {
   Future<void> stopScan() => _plugin.stopScanDevice();
 
   // ─── Connection ──────────────────────────────────────────────────────────
+  static const String _prefKeyDeviceMac = 'yc_connected_device_mac';
+  static const String _prefKeyDeviceName = 'yc_connected_device_name';
+
+  /// Saves the device to SharedPreferences for auto-reconnect
+  Future<void> _saveConnectedDevice(BluetoothDevice device) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_prefKeyDeviceMac, device.macAddress);
+    await prefs.setString(_prefKeyDeviceName, device.name);
+  }
+
+  /// Clears the saved device from SharedPreferences
+  Future<void> _clearConnectedDevice() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_prefKeyDeviceMac);
+    await prefs.remove(_prefKeyDeviceName);
+  }
+
+  /// Attempts to auto-connect to a previously connected device on startup.
+  /// Call this when the app starts. Returns true if auto-connect started successfully.
+  Future<bool> autoConnect() async {
+    final prefs = await SharedPreferences.getInstance();
+    final mac = prefs.getString(_prefKeyDeviceMac);
+    final name = prefs.getString(_prefKeyDeviceName);
+
+    if (mac != null && mac.isNotEmpty) {
+      final device = BluetoothDevice.formJson({
+        "macAddress": mac,
+        "deviceIdentifier": mac,
+        "name": name ?? "YC Device",
+        "rssiValue": 0,
+      });
+      return connect(device);
+    }
+    return false;
+  }
 
   /// Connect to a device. Automatically fetches DeviceFeature after success.
   Future<bool> connect(BluetoothDevice device) async {
@@ -65,6 +101,9 @@ class BleManager {
             
         // Sync phone time on connection
         await _plugin.setDeviceSyncPhoneTime().timeout(const Duration(seconds: 5));
+        
+        // Save device for auto-reconnect
+        await _saveConnectedDevice(device);
       } catch (_) {
         // Ignore timeout for secondary commands after connection
       }
@@ -72,8 +111,10 @@ class BleManager {
     return ok;
   }
 
-  Future<bool> disconnect() async =>
-      (await _plugin.disconnectDevice()) ?? false;
+  Future<bool> disconnect() async {
+    await _clearConnectedDevice();
+    return (await _plugin.disconnectDevice()) ?? false;
+  }
 
   Future<void> resetBond() => _plugin.resetBond();
 
