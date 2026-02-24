@@ -142,7 +142,7 @@ public class YcProductPluginHealthData {
                                     info.put("lightSleepSeconds", lightSleepSeconds);
                                     info.put("remSleepSeconds", remSleepSeconds);
 
-                                    info.put("detail", allData);
+                                    info.put("list", allData);
 
                                     datas.add(info);
                                 }

@@ -77,10 +77,10 @@ class RealTimeSteps {
   });
 
   factory RealTimeSteps.fromMap(Map m) => RealTimeSteps(
-        steps: (m['step'] ?? m['steps'] ?? 0) as int,
-        calories: (m['calories'] ?? m['calorie'] ?? 0) as int,
+        steps: ((m['sportStep'] ?? m['step'] ?? m['steps'] ?? 0) as num).toInt(),
+        calories: ((m['sportCalorie'] ?? m['calories'] ?? m['calorie'] ?? 0) as num).toInt(),
         distanceKm:
-            ((m['distance'] ?? m['distanceValue'] ?? 0) as num).toDouble(),
+            ((m['sportDistance'] ?? m['distance'] ?? m['distanceValue'] ?? 0) as num).toDouble(),
         timestamp: DateTime.now(),
       );
 }
