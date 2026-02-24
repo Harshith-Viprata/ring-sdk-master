@@ -253,7 +253,18 @@ class _HomeTab extends ConsumerWidget {
                           builder: (context, currentRef, _) {
                             final historyAsync = currentRef.watch(stepHistoryProvider);
                             final totalSteps = historyAsync.maybeWhen(
-                              data: (records) => records.isNotEmpty ? records.last.steps : 0,
+                              data: (records) {
+                                if (records.isEmpty) return 0;
+                                final now = DateTime.now();
+                                final todayRecords = records.where((r) => 
+                                  r.date.year == now.year &&
+                                  r.date.month == now.month &&
+                                  r.date.day == now.day
+                                );
+                                int sum = 0;
+                                for (var r in todayRecords) { sum += r.steps; }
+                                return sum;
+                              },
                               orElse: () => 0,
                             );
                             return MetricCard(

@@ -135,7 +135,7 @@ class HeartRateRecord {
         minBpm: ((m['minHeartRate'] ?? 0) as num).toInt(),
         maxBpm: ((m['maxHeartRate'] ?? 0) as num).toInt(),
         time: DateTime.fromMillisecondsSinceEpoch(
-          ((m['time'] ?? m['timestamp'] ?? 0) as num).toInt() * 1000,
+          ((m['time'] ?? m['timestamp'] ?? m['startTimeStamp'] ?? 0) as num).toInt() * 1000,
         ),
       );
 }
@@ -159,7 +159,7 @@ class StepRecord {
         distanceKm:
             ((m['distance'] ?? m['distanceValue'] ?? 0) as num).toDouble(),
         date: DateTime.fromMillisecondsSinceEpoch(
-          ((m['time'] ?? 0) as num).toInt() * 1000,
+          ((m['date'] ?? m['timestamp'] ?? m['startTimeStamp'] ?? 0) as num).toInt() * 1000,
         ),
       );
 }
@@ -217,7 +217,7 @@ class BloodOxygenRecord {
   factory BloodOxygenRecord.fromMap(Map m) => BloodOxygenRecord(
         spo2: ((m['bloodOxygen'] ?? m['value'] ?? 0) as num).toInt(),
         time: DateTime.fromMillisecondsSinceEpoch(
-          ((m['time'] ?? 0) as num).toInt() * 1000,
+          ((m['time'] ?? m['timestamp'] ?? m['startTimeStamp'] ?? 0) as num).toInt() * 1000,
         ),
       );
 }
@@ -237,7 +237,7 @@ class BloodPressureRecord {
         systolic: ((m['systolicBloodPressure'] ?? m['systolic'] ?? 0) as num).toInt(),
         diastolic: ((m['diastolicBloodPressure'] ?? m['diastolic'] ?? 0) as num).toInt(),
         time: DateTime.fromMillisecondsSinceEpoch(
-          ((m['time'] ?? 0) as num).toInt() * 1000,
+          ((m['time'] ?? m['timestamp'] ?? m['startTimeStamp'] ?? 0) as num).toInt() * 1000,
         ),
       );
 }
@@ -251,7 +251,7 @@ class TemperatureRecord {
   factory TemperatureRecord.fromMap(Map m) => TemperatureRecord(
         celsius: ((m['temperature'] ?? m['value'] ?? 0) as num).toDouble(),
         time: DateTime.fromMillisecondsSinceEpoch(
-          ((m['time'] ?? 0) as num).toInt() * 1000,
+          ((m['time'] ?? m['timestamp'] ?? m['startTimeStamp'] ?? 0) as num).toInt() * 1000,
         ),
       );
 }
