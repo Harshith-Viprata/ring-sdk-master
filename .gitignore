@@ -1,0 +1,18 @@
+# folders
+sample_images/
+yc_product_plugin-master/
+ycsdkresource-master/
+flutter-sdk-master/
+com.yucheng.HealthWear/
+config.arm64_v8a/
+config.xxhdpi/
+flutter-sdk-master/
+yc_product_plugin-master/
+ycsdkresource-master/
+
+# files
+icon.png
+manifest.json
+functionality_reference_p1.md.resolved
+functionality_reference_p2.md.resolved
+functionality_reference_p3.md.resolved
