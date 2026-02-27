@@ -15,6 +15,8 @@ import io.flutter.plugin.common.EventChannel;
 
 public class YcProductPluginRealData {
 
+    private static java.util.concurrent.ConcurrentHashMap<Integer, Long> lastEmitTimes = new java.util.concurrent.ConcurrentHashMap<>();
+
     /**
      * 监听实时数据
      *
@@ -28,6 +30,16 @@ public class YcProductPluginRealData {
         YCBTClient.appRegisterRealDataCallBack(new BleRealDataResponse() {
             @Override
             public void onRealDataResponse(int i, HashMap hashMap) {
+                System.out.println("LHY-REALDATA-RAW: dataType=" + i + " map=" + hashMap);
+                // --- BUG 2: Throttling Check (Max 1 event per 1000ms per characteristic) ---
+                long now = System.currentTimeMillis();
+                Long lastTime = lastEmitTimes.get(i);
+                if (lastTime != null && (now - lastTime) < 1000) {
+                    return; // Drop packet to prevent BLASTBufferQueue exhaustion over EventChannel
+                }
+                lastEmitTimes.put(i, now);
+                // --------------------------------------------------------------------------
+
                 Log.d("LHY", "RealData: dataType=" + i + " data=" + hashMap);
                 int dataType_val = i; 
                 switch (dataType_val) {
@@ -53,7 +65,7 @@ public class YcProductPluginRealData {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    eventSink.success(stepMap);
+                                    if (!YcProductPlugin.isAppInBackground) eventSink.success(stepMap);
                                 }
                             });
                         }
@@ -68,7 +80,7 @@ public class YcProductPluginRealData {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    eventSink.success(heartMap);
+                                    if (!YcProductPlugin.isAppInBackground) eventSink.success(heartMap);
                                 }
                             });
                         }
@@ -86,7 +98,7 @@ public class YcProductPluginRealData {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    eventSink.success(bloodOxygenMap);
+                                    if (!YcProductPlugin.isAppInBackground) eventSink.success(bloodOxygenMap);
                                 }
                             });
                         }
@@ -114,7 +126,7 @@ public class YcProductPluginRealData {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        eventSink.success(bloodPressureMap);
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(bloodPressureMap);
                                     }
                                 });
                             }
@@ -130,7 +142,7 @@ public class YcProductPluginRealData {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        eventSink.success(hrvMap);
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(hrvMap);
                                     }
                                 });
                             }
@@ -152,12 +164,12 @@ public class YcProductPluginRealData {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        eventSink.success(bloodGlucoseMap);
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(bloodGlucoseMap);
                                     }
                                 });
                             }
 
-                            if (tempFloat != null && tempInteger != null && tempFloat != 0x0F) {
+                            if (tempFloat != null && tempInteger != null && tempFloat != 0x0F && tempInteger > 0) {
                                 String temperature = tempInteger + "." + tempFloat;
                                 HashMap temperatureMap = new HashMap();
                                 temperatureMap.put(YcProductPluginFlutterType.NativeEventType.deviceRealTemperature, temperature);
@@ -165,7 +177,65 @@ public class YcProductPluginRealData {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        eventSink.success(temperatureMap);
+                                        Log.e("Flutter", "Sending Temp: " + temperatureMap);
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(temperatureMap);
+                                    }
+                                });
+                            }
+
+                            Integer heartRate = (Integer) hashMap.get("heartRate");
+                            if (heartRate != null && heartRate > 0) {
+                                HashMap heartMap = new HashMap();
+                                heartMap.put(YcProductPluginFlutterType.NativeEventType.deviceRealHeartRate, heartRate);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(heartMap);
+                                    }
+                                });
+                            }
+
+                            Integer bloodOxygen = (Integer) hashMap.get("bloodOxygen");
+                            if (bloodOxygen != null && bloodOxygen > 0) {
+                                HashMap bloodOxygenMap = new HashMap();
+                                bloodOxygenMap.put(YcProductPluginFlutterType.NativeEventType.deviceRealBloodOxygen, bloodOxygen);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(bloodOxygenMap);
+                                    }
+                                });
+                            }
+
+                            Integer sbp = (Integer) hashMap.get("SBP");
+                            Integer dbp = (Integer) hashMap.get("DBP");
+                            if (sbp != null && dbp != null && sbp > 0 && dbp > 0) {
+                                HashMap bpInfo = new HashMap();
+                                bpInfo.put("systolicBloodPressure", sbp);
+                                bpInfo.put("diastolicBloodPressure", dbp);
+                                HashMap bloodPressureMap = new HashMap();
+                                bloodPressureMap.put(YcProductPluginFlutterType.NativeEventType.deviceRealBloodPressure, bpInfo);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.e("Flutter", "Sending BP: " + bloodPressureMap);
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(bloodPressureMap);
+                                    }
+                                });
+                            }
+
+                            Integer step = (Integer) hashMap.get("step");
+                            if (step != null && step >= 0) {
+                                HashMap stepInfo = new HashMap();
+                                stepInfo.put("step", step);
+                                stepInfo.put("distance", hashMap.get("dis") != null ? hashMap.get("dis") : 0);
+                                stepInfo.put("calories", hashMap.get("kcal") != null ? hashMap.get("kcal") : 0);
+                                HashMap stepMap = new HashMap();
+                                stepMap.put(YcProductPluginFlutterType.NativeEventType.deviceRealStep, stepInfo);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(stepMap);
                                     }
                                 });
                             }
@@ -186,7 +256,7 @@ public class YcProductPluginRealData {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        eventSink.success(pressureMap);
+                                        if (!YcProductPlugin.isAppInBackground) eventSink.success(pressureMap);
                                     }
                                 });
                             }
@@ -225,7 +295,7 @@ public class YcProductPluginRealData {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    eventSink.success(sportMap);
+                                    if (!YcProductPlugin.isAppInBackground) eventSink.success(sportMap);
                                 }
                             });
                         }
@@ -245,7 +315,7 @@ public class YcProductPluginRealData {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    eventSink.success(map);
+                                    if (!YcProductPlugin.isAppInBackground) eventSink.success(map);
                                 }
                             });
                         }
@@ -282,7 +352,7 @@ public class YcProductPluginRealData {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    eventSink.success(map);
+                                    if (!YcProductPlugin.isAppInBackground) eventSink.success(map);
                                 }
                             });
                         }

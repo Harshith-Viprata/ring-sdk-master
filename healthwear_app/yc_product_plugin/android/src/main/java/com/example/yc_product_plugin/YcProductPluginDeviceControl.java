@@ -37,8 +37,8 @@ public class YcProductPluginDeviceControl {
                 Log.e("deviceToApp", "onDataResponse: " + hashMap);
 
                 if (hashMap != null) {
-
-                    if (0 == i) {
+                    // `i == 2` means actively measuring, `i == 0` means success. We must allow both for Measurements.
+                    if (0 == i || (int) hashMap.get("dataType") == Constants.DATATYPE.DeviceMeasurementResult) {
                         int dataType = (int) hashMap.get("dataType");
                         switch (dataType) {
                             case Constants.DATATYPE.DeviceTakePhoto://相机拍照控制
@@ -73,12 +73,20 @@ public class YcProductPluginDeviceControl {
                             // 测量状态
                             case Constants.DATATYPE.DeviceMeasurementResult:
                                 byte[] data = (byte[]) hashMap.get("datas");
-                                int state = data[1];
-                                int healthDataType = data[0];
+                                int state = data[1] & 0xFF;
+                                int healthDataType = data[0] & 0xFF;
 
                                 HashMap stateInfo = new HashMap();
                                 stateInfo.put("state", state);
                                 stateInfo.put("healthDataType", healthDataType);
+                                
+                                java.util.ArrayList<Integer> rawValues = new java.util.ArrayList<>();
+                                if (data != null && data.length > 2) {
+                                    for(int j = 2; j < data.length; j++) {
+                                        rawValues.add(data[j] & 0xFF);
+                                    }
+                                }
+                                stateInfo.put("values", rawValues);
 
                                 HashMap measureMap = new HashMap();
                                 measureMap.put(
@@ -189,13 +197,21 @@ public class YcProductPluginDeviceControl {
         Boolean isEnable = (Boolean) arguments;
 
         YCBTClient.appControlTakePhoto(isEnable ? 1 : 0, new BleDataResponse() {
+            private boolean isReplied = false;
             @Override
             public void onDataResponse(int i, float v, HashMap hashMap) {
+                if (isReplied) return;
+                isReplied = true;
                 int state = YcProductPlugin.convertPluginState(i);
                 HashMap map = new HashMap();
                 map.put("code", state);
                 map.put("data", "");
-                result.success(map);
+                new Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        result.success(map);
+                    }
+                });
             }
         });
     }
@@ -222,13 +238,21 @@ public class YcProductPluginDeviceControl {
         int sportType = (int) list.get(1);
 
         YCBTClient.appRunMode(state, sportType, new BleDataResponse() {
+            private boolean isReplied = false;
             @Override
             public void onDataResponse(int i, float v, HashMap hashMap) {
+                if (isReplied) return;
+                isReplied = true;
                 int state = YcProductPlugin.convertPluginState(i);
                 HashMap map = new HashMap();
                 map.put("code", state);
                 map.put("data", "");
-                result.success(map);
+                new Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        result.success(map);
+                    }
+                });
             }
         });
     }
@@ -256,13 +280,22 @@ public class YcProductPluginDeviceControl {
         int dataType = (int) list.get(1);
 
         YCBTClient.appStartMeasurement(state, dataType, new BleDataResponse() {
+            private boolean isReplied = false;
             @Override
             public void onDataResponse(int i, float v, HashMap hashMap) {
+                System.out.println("LHY-MEASURE: appStartMeasurement fired! i=" + i + ", v=" + v + ", hashMap=" + hashMap);
+                if (isReplied) return;
+                isReplied = true;
                 int state = YcProductPlugin.convertPluginState(i);
                 HashMap map = new HashMap();
                 map.put("code", state);
                 map.put("data", "");
-                result.success(map);
+                new Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        result.success(map);
+                    }
+                });
             }
         });
 
@@ -281,20 +314,38 @@ public class YcProductPluginDeviceControl {
             result.success(map);
             return;
         }
-
         boolean state = (boolean) list.get(0);
-        int dataType = (int) list.get(1);
-        Log.d("LHY", "realTimeDataUpload: state=" + state + " dataType=" + dataType);
+        int dataTypeIndex = (int) list.get(1);
+        
+        // Map Flutter DeviceRealTimeDataType to Android SDK Types:
+        int sdkDataType = 0x09; // Default to comprehensive
+        switch (dataTypeIndex) {
+            case 0: sdkDataType = 0x01; break; // step
+            case 1: sdkDataType = 0x02; break; // heartRate
+            case 2: sdkDataType = 0x03; break; // bloodOxygen
+            case 3: sdkDataType = 0x04; break; // bloodPressure
+            case 7: sdkDataType = 0x09; break; // combinedData
+        }
 
-        YCBTClient.appRealDataFromDevice(state ? 1 : 0, dataType, new BleDataResponse() {
+        Log.d("LHY", "realTimeDataUpload: state=" + state + " dartEnumIndex=" + dataTypeIndex + " sdkDataType=" + sdkDataType);
+
+        YCBTClient.appRealDataFromDevice(state ? 1 : 0, sdkDataType, new BleDataResponse() {
+            private boolean isReplied = false;
             @Override
             public void onDataResponse(int i, float v, HashMap hashMap) {
-                Log.d("LHY", "realTimeDataUpload response: code=" + i + " type=" + dataType);
+                System.out.println("LHY-MEASURE: appRealDataFromDevice fired! i=" + i + ", v=" + v + ", hashMap=" + hashMap);
+                if (isReplied) return;
+                isReplied = true;
                 int state = YcProductPlugin.convertPluginState(i);
                 HashMap map = new HashMap();
                 map.put("code", state);
                 map.put("data", "");
-                result.success(map);
+                new Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        result.success(map);
+                    }
+                });
             }
         });
     }

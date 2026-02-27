@@ -88,11 +88,33 @@ public class YcProductPluginDevice {
      * @param arguments
      * @param result
      */
-    public static void connectDevice(Object arguments, @NonNull MethodChannel.Result result) {
+    public static void connectDevice(Context context, Object arguments, @NonNull MethodChannel.Result result) {
 
         Log.d("MARK-", "发起设备连接 Android connectDevice : ");
         isNeedReplay = true;
         String macAddress = (String) arguments;
+
+        // --- BUG 1: GATT Leak OS-level cleanup pre-check ---
+        try {
+            android.bluetooth.BluetoothManager manager = (android.bluetooth.BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+            if (manager != null) {
+                List<android.bluetooth.BluetoothDevice> connectedOSDevices = manager.getConnectedDevices(android.bluetooth.BluetoothProfile.GATT);
+                for (android.bluetooth.BluetoothDevice osDevice : connectedOSDevices) {
+                    if (osDevice.getAddress().equalsIgnoreCase(macAddress)) {
+                        Log.d("MARK-", "Device found in OS connected list! Forcing GATT disconnect before YC connection.");
+                        android.bluetooth.BluetoothGatt tempGatt = osDevice.connectGatt(context, false, new android.bluetooth.BluetoothGattCallback() {});
+                        if (tempGatt != null) {
+                            tempGatt.disconnect();
+                            tempGatt.close();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("MARK-", "GATT cleanup error: " + e.getMessage());
+        }
+        // ---------------------------------------------------
+
         BluetoothDevice device = null;
         for (int i = 0; i < deviceList.size(); i++) {
             if (deviceList.get(i).containsKey(macAddress)) {
@@ -119,8 +141,13 @@ public class YcProductPluginDevice {
                     Log.d("MARK-", "设备连接 onConnectResponse: " + i);
 
                     isNeedReplay = false;
-                    result.success(0 == i ||
-                            YCBTClient.connectState() == Constants.BLEState.ReadWriteOK);
+                    new Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            result.success(0 == i ||
+                                    YCBTClient.connectState() == Constants.BLEState.ReadWriteOK);
+                        }
+                    });
                 }
             });
         }

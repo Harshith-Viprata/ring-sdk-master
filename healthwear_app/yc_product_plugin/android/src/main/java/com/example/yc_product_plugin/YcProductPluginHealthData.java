@@ -36,9 +36,11 @@ public class YcProductPluginHealthData {
         switch (dataType) {
             case YcProductPluginFlutterType.HealthDataType.step:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistorySport, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -78,16 +80,18 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.sleep:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistorySleep, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -138,7 +142,7 @@ public class YcProductPluginHealthData {
                                     info.put("lightSleepSeconds", lightSleepSeconds);
                                     info.put("remSleepSeconds", remSleepSeconds);
 
-                                    info.put("detail", allData);
+                                    info.put("list", allData);
 
                                     datas.add(info);
                                 }
@@ -152,16 +156,18 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.heartRate:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistoryHeart, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -194,16 +200,18 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.bloodPressure:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistoryBlood, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -240,16 +248,18 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.combinedData:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistoryAll, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -315,16 +325,18 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.invasiveComprehensiveData:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistoryComprehensiveMeasureData, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -413,16 +425,18 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.sportHistoryData:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistorySportMode, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -479,15 +493,17 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
             case YcProductPluginFlutterType.HealthDataType.bodyIndexData:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_History_Body_Data, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
 
@@ -550,14 +566,17 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
             case YcProductPluginFlutterType.HealthDataType.WearingStatus:
                 YCBTClient.healthHistoryData(Constants.DATATYPE.Health_HistoryWearingStatus, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         Log.d("WearingStatus","hashMap:"+hashMap);
                         int state = YcProductPlugin.convertPluginState(i);
                         ArrayList datas = new ArrayList();
@@ -593,7 +612,7 @@ public class YcProductPluginHealthData {
                         HashMap map = new HashMap();
                         map.put("code", state);
                         map.put("data", datas);
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
@@ -616,13 +635,15 @@ public class YcProductPluginHealthData {
         switch (dataType) {
             case YcProductPluginFlutterType.HealthDataType.step:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteSport, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
-
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
 
                     }
                 });
@@ -630,95 +651,119 @@ public class YcProductPluginHealthData {
 
             case YcProductPluginFlutterType.HealthDataType.sleep:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteSleep, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.heartRate:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteHeart, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.bloodPressure:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteBlood, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.combinedData:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteAll, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.invasiveComprehensiveData:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteComprehensiveMeasureData, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.sportHistoryData:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteSportMode, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
 
             case YcProductPluginFlutterType.HealthDataType.bodyIndexData:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteBodyData, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
             case YcProductPluginFlutterType.HealthDataType.WearingStatus:
                 YCBTClient.deleteHealthHistoryData(Constants.DATATYPE.Health_DeleteHistoryWearingStatus, new BleDataResponse() {
+                    private boolean isReplied = false;
                     @Override
                     public void onDataResponse(int i, float v, HashMap hashMap) {
+                        if (isReplied) return;
+                        isReplied = true;
                         HashMap map = new HashMap();
                         map.put("code", YcProductPlugin.convertPluginState(i));
                         map.put("data", "");
-                        result.success(map);
+                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> result.success(map));
                     }
                 });
                 break;
