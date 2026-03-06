@@ -88,6 +88,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     print(
         '[DashboardBloc] Blood glucose history: ${finalGlucose.length} records');
 
+    final sleepRecords = sleepResult.fold(
+        (_) => state.sleepHistory, (data) => data as List<SleepRecord>);
+    print('[DashboardBloc] Sleep history: ${sleepRecords.length} records');
+    if (sleepRecords.isNotEmpty) {
+      final latest = sleepRecords.last;
+      print(
+          '[DashboardBloc] Latest sleep: deep=${latest.deepMinutes}min, light=${latest.lightMinutes}min, rem=${latest.remMinutes}min, total=${latest.totalMinutes}min, start=${latest.startTime}, end=${latest.endTime}');
+    }
+
     emit(state.copyWith(
       status: DashboardStatus.loaded,
       heartRateHistory: hrResult.fold((_) => state.heartRateHistory,

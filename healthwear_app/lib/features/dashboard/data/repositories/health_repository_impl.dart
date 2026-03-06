@@ -238,26 +238,41 @@ class HealthRepositoryImpl implements HealthRepository {
     try {
       final response =
           await bleDataSource.queryHealthData(HealthDataType.sleep);
+      print(
+          '[HealthRepo] getSleepHistory raw response: ${response?.length} items, types: ${response?.map((e) => e.runtimeType).toSet()}');
       final items = _extractList(response);
+      print('[HealthRepo] getSleepHistory extracted: ${items.length} items');
       final records = <SleepRecord>[];
       for (final item in items) {
+        print(
+            '[HealthRepo] Sleep item type: ${item.runtimeType}, value: $item');
         if (item is SleepDataInfo) {
+          final deep = (item.deepSleepSeconds / 60).round();
+          final light = (item.lightSleepSeconds / 60).round();
+          final rem = (item.remSleepSeconds / 60).round();
+          final start = DateTime.fromMillisecondsSinceEpoch(
+            item.startTimeStamp * 1000,
+          );
+          final end = DateTime.fromMillisecondsSinceEpoch(
+            item.endTimeStamp * 1000,
+          );
+          print(
+              '[HealthRepo] Sleep record: deep=${deep}min, light=${light}min, rem=${rem}min, total=${deep + light + rem}min, start=$start, end=$end');
           records.add(SleepRecord(
-            deepMinutes: (item.deepSleepSeconds / 60).round(),
-            lightMinutes: (item.lightSleepSeconds / 60).round(),
-            remMinutes: (item.remSleepSeconds / 60).round(),
+            deepMinutes: deep,
+            lightMinutes: light,
+            remMinutes: rem,
             awakeMinutes: 0, // SDK does not provide separate awake field
-            startTime: DateTime.fromMillisecondsSinceEpoch(
-              item.startTimeStamp * 1000,
-            ),
-            endTime: DateTime.fromMillisecondsSinceEpoch(
-              item.endTimeStamp * 1000,
-            ),
+            startTime: start,
+            endTime: end,
           ));
         }
       }
+      print(
+          '[HealthRepo] getSleepHistory final: ${records.length} sleep records');
       return Right(records);
     } catch (e) {
+      print('[HealthRepo] getSleepHistory error: $e');
       return Left(BleFailure(message: 'getSleepHistory failed: $e'));
     }
   }
