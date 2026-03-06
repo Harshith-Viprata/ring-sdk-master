@@ -51,8 +51,9 @@ class EcgPage extends StatelessWidget {
                                 const SizedBox(height: 12),
                                 Text(
                                   state.status == EcgStatus.measuring
-                                      ? 'Waiting for ECG signal…'
+                                      ? 'Waiting for ECG signal…\nPlace finger on electrode'
                                       : 'Press Start to begin',
+                                  textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: AppColors.textSecondary,
                                     fontSize: 14,
@@ -71,11 +72,13 @@ class EcgPage extends StatelessWidget {
                   ),
                 ),
               ),
-              // Info row
+              // Info chips row
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  alignment: WrapAlignment.center,
                   children: [
                     _InfoChip(
                       label: 'Heart Rate',
@@ -85,8 +88,15 @@ class EcgPage extends StatelessWidget {
                       color: AppColors.heartRate,
                     ),
                     _InfoChip(
+                      label: 'HRV',
+                      value: state.hrvNorm != null
+                          ? '${state.hrvNorm!.toStringAsFixed(1)}'
+                          : '--',
+                      color: const Color(0xFF7E57C2),
+                    ),
+                    _InfoChip(
                       label: 'Duration',
-                      value: '${state.elapsedSeconds}s',
+                      value: _formatDuration(state.elapsedSeconds),
                       color: AppColors.accent,
                     ),
                     _InfoChip(
@@ -94,13 +104,36 @@ class EcgPage extends StatelessWidget {
                       value: _statusText(state.status),
                       color: _statusColor(state.status),
                     ),
+                    if (state.respiratoryRate != null)
+                      _InfoChip(
+                        label: 'Resp Rate',
+                        value: '${state.respiratoryRate} /min',
+                        color: const Color(0xFF26A69A),
+                      ),
+                    if (state.afFlag == true)
+                      const _InfoChip(
+                        label: 'AF Detected',
+                        value: '⚠ Yes',
+                        color: Color(0xFFFF5252),
+                      ),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
+              // Error message
+              if (state.errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    state.errorMessage!,
+                    style:
+                        const TextStyle(color: Color(0xFFFF5252), fontSize: 13),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               // Start/Stop button
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                 child: SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -135,6 +168,12 @@ class EcgPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _formatDuration(int seconds) {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
   String _statusText(EcgStatus s) {
@@ -178,26 +217,27 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.textPrimary,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 2),
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 11,
             ),
@@ -257,6 +297,5 @@ class _EcgWaveformPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _EcgWaveformPainter old) =>
-      data.length != old.data.length;
+  bool shouldRepaint(covariant _EcgWaveformPainter old) => true;
 }

@@ -22,3 +22,6 @@ class EcgDataReceived extends EcgEvent {
 
 /// ECG measurement completed — result available.
 class EcgCompleted extends EcgEvent {}
+
+/// Internal timer tick event.
+class _EcgTimerTick extends EcgEvent {}
