@@ -1376,11 +1376,11 @@ class CombinedDataDataInfo {
     if (map != null) {
       startTimeStamp = map["startTimeStamp"];
 
-      // 这个参数用不上，先注释
-      // step = map["step"];
-      // heartRate = map["heartRate"];
-      // systolicBloodPressure = map["systolicBloodPressure"];
-      // diastolicBloodPressure = map["diastolicBloodPressure"];
+      // Re-enabled: step data is only available via combinedData on some devices
+      step = map["step"] ?? 0;
+      heartRate = map["heartRate"] ?? 0;
+      systolicBloodPressure = map["systolicBloodPressure"] ?? 0;
+      diastolicBloodPressure = map["diastolicBloodPressure"] ?? 0;
 
       bloodOxygen = map["bloodOxygen"];
       respirationRate = map["respirationRate"];

@@ -180,18 +180,6 @@ class _ConnectedDashboard extends StatelessWidget {
                         isLoading: isLoading,
                         onTap: () => context.push(AppRoutes.temperature),
                       ),
-                      // Stress Level
-                      MetricCard(
-                        title: 'Stress',
-                        value: state.liveStress != null
-                            ? '${state.liveStress}'
-                            : '--',
-                        unit: '',
-                        icon: Icons.psychology_rounded,
-                        color: AppColors.accentPurple,
-                        isLoading: isLoading,
-                        onTap: () => context.push(AppRoutes.stress),
-                      ),
                       // Blood Glucose
                       MetricCard(
                         title: 'Glucose',

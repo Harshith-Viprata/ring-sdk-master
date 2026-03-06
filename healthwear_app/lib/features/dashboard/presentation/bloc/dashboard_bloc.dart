@@ -50,8 +50,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       status: DashboardStatus.loaded,
       heartRateHistory: hrResult.fold((_) => state.heartRateHistory,
           (data) => data as List<HeartRateRecord>),
-      stepHistory: stepResult.fold(
-          (_) => state.stepHistory, (data) => data as List<StepRecord>),
+      stepHistory: stepResult.fold((_) => state.stepHistory, (data) {
+        final steps = data as List<StepRecord>;
+        print('[DashboardBloc] Step history synced: ${steps.length} records');
+        if (steps.isNotEmpty) {
+          print(
+              '[DashboardBloc] Latest step record: steps=${steps.last.steps}, cal=${steps.last.calories}, dist=${steps.last.distanceKm}');
+        }
+        return steps;
+      }),
       sleepHistory: sleepResult.fold(
           (_) => state.sleepHistory, (data) => data as List<SleepRecord>),
       bloodOxygenHistory: spo2Result.fold((_) => state.bloodOxygenHistory,
@@ -92,8 +99,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
     // Now enable SDK features non-blocking (connect already enables these,
     // but we re-enable in case the connection was re-established).
+    // Repository internally enables BOTH step and combinedData types.
     _healthRepo.setRealTimeUpload(true).then((_) {
-      print('[DashboardBloc] setRealTimeUpload OK');
+      print('[DashboardBloc] setRealTimeUpload OK (step + combinedData)');
     }).catchError((e) {
       print('[DashboardBloc] setRealTimeUpload failed: $e');
     });

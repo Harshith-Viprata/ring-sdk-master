@@ -83,30 +83,76 @@ class BleManager {
     bool ok = false;
     try {
       ok = await _plugin.connectDevice(device).timeout(
-        const Duration(seconds: 15),
-        onTimeout: () => false,
-      ) ?? false;
+                const Duration(seconds: 15),
+                onTimeout: () => false,
+              ) ??
+          false;
     } catch (e) {
       ok = false;
     }
-    
+
     if (ok) {
-      // Fetch feature capabilities immediately so UI can adapt (with timeouts)
+      // Post-connection setup — each command gets its own try-catch
+      // so one failure doesn't kill the entire chain.
+
       try {
         await _plugin.getDeviceFeature().timeout(const Duration(seconds: 5));
-        
-        // MANDATORY PATCH: explicitly enable real-time data streaming upon successful connection
-        await _plugin.realTimeDataUpload(true, dataType: DeviceRealTimeDataType.combinedData)
-            .timeout(const Duration(seconds: 5));
-            
-        // Sync phone time on connection
-        await _plugin.setDeviceSyncPhoneTime().timeout(const Duration(seconds: 5));
-        
-        // Save device for auto-reconnect
-        await _saveConnectedDevice(device);
-      } catch (_) {
-        // Ignore timeout for secondary commands after connection
+        print('[BleManager] getDeviceFeature OK');
+      } catch (e) {
+        print('[BleManager] getDeviceFeature failed: $e');
       }
+
+      // Small delay to let SDK process previous command
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // NOTE: realTimeDataUpload commands are fire-and-forget.
+      // The native SDK processes them (confirmed by native logs) but the
+      // BleDataResponse callback never fires, causing timeouts.
+      // We don't await these — just fire them with delays between.
+      _plugin
+          .realTimeDataUpload(true, dataType: DeviceRealTimeDataType.step)
+          .timeout(const Duration(seconds: 3))
+          .then((_) => print('[BleManager] realTimeDataUpload(step) OK'))
+          .catchError((e) => print(
+              '[BleManager] realTimeDataUpload(step) callback timeout (command was processed by native)'));
+
+      await Future.delayed(const Duration(milliseconds: 1000));
+
+      _plugin
+          .realTimeDataUpload(true,
+              dataType: DeviceRealTimeDataType.combinedData)
+          .timeout(const Duration(seconds: 3))
+          .then(
+              (_) => print('[BleManager] realTimeDataUpload(combinedData) OK'))
+          .catchError((e) => print(
+              '[BleManager] realTimeDataUpload(combinedData) callback timeout (command was processed by native)'));
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      try {
+        await _plugin
+            .setDeviceUserInfo(170, 70, 30, DeviceUserGender.male)
+            .timeout(const Duration(seconds: 5));
+        print('[BleManager] setDeviceUserInfo OK');
+      } catch (e) {
+        print('[BleManager] setDeviceUserInfo failed: $e');
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      try {
+        await _plugin
+            .setDeviceSyncPhoneTime()
+            .timeout(const Duration(seconds: 5));
+        print('[BleManager] setDeviceSyncPhoneTime OK');
+      } catch (e) {
+        print('[BleManager] setDeviceSyncPhoneTime failed: $e');
+      }
+
+      // Save device for auto-reconnect
+      try {
+        await _saveConnectedDevice(device);
+      } catch (_) {}
     }
     return ok;
   }
@@ -120,8 +166,7 @@ class BleManager {
 
   // ─── Device Info ─────────────────────────────────────────────────────────
 
-  Future<DeviceFeature?> getDeviceFeature() =>
-      _plugin.getDeviceFeature();
+  Future<DeviceFeature?> getDeviceFeature() => _plugin.getDeviceFeature();
 
   Future<DeviceBasicInfo?> getDeviceBasicInfo() async {
     final r = await _plugin.queryDeviceBasicInfo();
@@ -154,13 +199,17 @@ class BleManager {
   }
 
   /// Enable/disable continuous hardware health monitoring (turns on the optical sensors)
-  Future<void> setDeviceHealthMonitoringMode({required bool enable, int interval = 10}) async {
-    await _plugin.setDeviceHealthMonitoringMode(isEnable: enable, interval: interval);
+  Future<void> setDeviceHealthMonitoringMode(
+      {required bool enable, int interval = 10}) async {
+    await _plugin.setDeviceHealthMonitoringMode(
+        isEnable: enable, interval: interval);
   }
 
   /// Enable temperature continuous monitoring
-  Future<void> setDeviceTemperatureMonitoringMode({required bool enable, int interval = 10}) async {
-    await _plugin.setDeviceTemperatureMonitoringMode(isEnable: enable, interval: interval);
+  Future<void> setDeviceTemperatureMonitoringMode(
+      {required bool enable, int interval = 10}) async {
+    await _plugin.setDeviceTemperatureMonitoringMode(
+        isEnable: enable, interval: interval);
   }
 
   // ─── Historical Health Data ──────────────────────────────────────────────
@@ -169,6 +218,8 @@ class BleManager {
   /// [healthDataType] is a HealthDataType constant.
   Future<List?> queryHealthHistory(int healthDataType) async {
     final r = await _plugin.queryDeviceHealthData(healthDataType);
+    print(
+        '[BleManager] queryHealthHistory type=$healthDataType status=${r?.statusCode} dataLength=${r?.data?.length}');
     if (r?.statusCode == PluginState.succeed) return r!.data;
     return null;
   }
@@ -320,5 +371,6 @@ class BleManager {
     DeviceMcuPlatform platform,
     String firmwarePath,
     OTAProcessCallback callback,
-  ) => _plugin.deviceUpgrade(platform, firmwarePath, callback);
+  ) =>
+      _plugin.deviceUpgrade(platform, firmwarePath, callback);
 }

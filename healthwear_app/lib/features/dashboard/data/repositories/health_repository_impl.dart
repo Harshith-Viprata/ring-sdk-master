@@ -120,12 +120,22 @@ class HealthRepositoryImpl implements HealthRepository {
   @override
   Future<Either<Failure, void>> setRealTimeUpload(bool enable) async {
     try {
+      // Enable BOTH step and combinedData types — SDK accepts one per call
+      // Delay between calls to prevent BLE command queue blockage
+      await bleDataSource.setRealTimeUpload(
+        enable,
+        type: DeviceRealTimeDataType.step,
+      );
+      print('[HealthRepo] setRealTimeUpload(step) OK');
+      await Future.delayed(const Duration(milliseconds: 500));
       await bleDataSource.setRealTimeUpload(
         enable,
         type: DeviceRealTimeDataType.combinedData,
       );
+      print('[HealthRepo] setRealTimeUpload(combinedData) OK');
       return const Right(null);
     } catch (e) {
+      print('[HealthRepo] setRealTimeUpload failed: $e');
       return Left(BleFailure(message: 'setRealTimeUpload failed: $e'));
     }
   }
@@ -196,10 +206,16 @@ class HealthRepositoryImpl implements HealthRepository {
   Future<Either<Failure, List<StepRecord>>> getStepHistory() async {
     try {
       final response = await bleDataSource.queryHealthData(HealthDataType.step);
+      print(
+          '[HealthRepo] getStepHistory raw response: $response (type: ${response?.runtimeType}, length: ${response?.length})');
       final items = _extractList(response);
+      print(
+          '[HealthRepo] getStepHistory extracted items: ${items.length}, types: ${items.map((e) => e.runtimeType).toSet()}');
       final records = <StepRecord>[];
       for (final item in items) {
         if (item is StepDataInfo) {
+          print(
+              '[HealthRepo] StepDataInfo: step=${item.step}, cal=${item.calories}, dist=${item.distance}, ts=${item.startTimeStamp}');
           records.add(StepRecord(
             steps: item.step,
             calories: item.calories,
@@ -210,8 +226,44 @@ class HealthRepositoryImpl implements HealthRepository {
           ));
         }
       }
+
+      // Fallback: if step query returned 0.records, extract from combinedData
+      if (records.isEmpty) {
+        print('[HealthRepo] Step query empty, trying combinedData fallback...');
+        final combinedResponse =
+            await bleDataSource.queryHealthData(HealthDataType.combinedData);
+        final combinedItems = _extractList(combinedResponse);
+        print('[HealthRepo] combinedData items: ${combinedItems.length}');
+
+        // Aggregate steps per day from combinedData records
+        final Map<String, StepRecord> dayMap = {};
+        for (final item in combinedItems) {
+          if (item is CombinedDataDataInfo && item.step > 0) {
+            final date =
+                DateTime.fromMillisecondsSinceEpoch(item.startTimeStamp * 1000);
+            final dayKey = '${date.year}-${date.month}-${date.day}';
+            final existing = dayMap[dayKey];
+            // Keep the highest step count for the day (cumulative)
+            if (existing == null || item.step > existing.steps) {
+              dayMap[dayKey] = StepRecord(
+                steps: item.step,
+                calories: 0,
+                distanceKm: 0,
+                date: date,
+              );
+            }
+            print(
+                '[HealthRepo] CombinedData step: ${item.step}, date: $date, glucose: ${item.bloodGlucose}, temp: ${item.temperature}');
+          }
+        }
+        records.addAll(dayMap.values);
+        print(
+            '[HealthRepo] combinedData fallback produced ${records.length} step records');
+      }
+
       return Right(records);
     } catch (e) {
+      print('[HealthRepo] getStepHistory error: $e');
       return Left(BleFailure(message: 'getStepHistory failed: $e'));
     }
   }
