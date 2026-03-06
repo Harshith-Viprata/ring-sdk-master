@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/ble/ble_manager.dart';
-import 'features/dashboard/dashboard_screen.dart';
+
+import 'config/routes/app_router.dart';
+import 'core/di/injection_container.dart';
+import 'features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'features/device/presentation/bloc/device_bloc.dart';
+import 'features/ecg/presentation/bloc/ecg_bloc.dart';
 import 'shared/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Force portrait orientation
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Set system UI style (dark status bar text on transparent bg)
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -25,10 +27,9 @@ void main() async {
     ),
   );
 
-  // Initialise BLE plugin (before runApp so events can be listened to)
-  await BleManager.instance.init();
+  await initDependencies();
 
-  runApp(const ProviderScope(child: HealthWearApp()));
+  runApp(const HealthWearApp());
 }
 
 class HealthWearApp extends StatelessWidget {
@@ -36,14 +37,20 @@ class HealthWearApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'HealthWear',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
-      home: const DashboardScreen(),
-      // Configure EasyLoading
-      builder: EasyLoading.init(
-        builder: (context, child) => child!,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<DeviceBloc>(create: (_) => sl<DeviceBloc>()),
+        BlocProvider<DashboardBloc>(create: (_) => sl<DashboardBloc>()),
+        BlocProvider<EcgBloc>(create: (_) => sl<EcgBloc>()),
+      ],
+      child: MaterialApp.router(
+        title: 'HealthWear',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.dark,
+        routerConfig: appRouter,
+        builder: EasyLoading.init(
+          builder: (context, child) => child!,
+        ),
       ),
     );
   }

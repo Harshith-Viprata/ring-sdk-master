@@ -15,7 +15,17 @@ dependencies:
     path: yc_product_plugin/
 
   # === STATE MANAGEMENT ===
-  flutter_riverpod: ^2.5.1
+  flutter_bloc: ^8.1.3
+
+  # === DEPENDENCY INJECTION ===
+  get_it: ^7.6.7
+
+  # === ROUTING ===
+  go_router: ^14.0.0
+
+  # === ARCHITECTURE UTILITIES ===
+  equatable: ^2.0.5
+  dartz: ^0.10.1
 
   # === UI & CHARTING ===
   cupertino_icons: ^1.0.6
