@@ -51,6 +51,18 @@ class _BloodGlucosePageState extends State<BloodGlucosePage> {
     super.dispose();
   }
 
+  Color _glucoseColor(double g) {
+    if (g < 3.9) return const Color(0xFF42A5F5);
+    if (g <= 6.1) return const Color(0xFF66BB6A);
+    return const Color(0xFFFF5252);
+  }
+
+  String _glucoseStatus(double g) {
+    if (g < 3.9) return 'Low';
+    if (g <= 6.1) return 'Normal';
+    return 'High';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +77,8 @@ class _BloodGlucosePageState extends State<BloodGlucosePage> {
       ),
       body: BlocBuilder<DashboardBloc, DashboardState>(
         builder: (context, state) {
-          final glucose = state.liveBloodGlucose;
+          final glucose = state.latestBloodGlucose;
+          final history = state.bloodGlucoseHistory;
 
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
@@ -177,10 +190,118 @@ class _BloodGlucosePageState extends State<BloodGlucosePage> {
                         ),
                 ),
               ),
+              // History Records Header
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.history_rounded,
+                          color: AppColors.textSecondary, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'History Records (${history.length})',
+                        style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // History list
+              if (history.isEmpty)
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Center(
+                      child: Text('No glucose history records yet',
+                          style: TextStyle(color: AppColors.textSecondary)),
+                    ),
+                  ),
+                )
+              else
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      // Show in reverse (newest first)
+                      final record = history[history.length - 1 - index];
+                      final color = _glucoseColor(record.glucoseMmol);
+                      final status = _glucoseStatus(record.glucoseMmol);
+                      final time = record.time;
+                      final timeStr =
+                          '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+                      final dateStr = '${time.day}/${time.month}/${time.year}';
+
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: color.withOpacity(0.2), width: 1),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 4,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Value
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${record.glucoseMmol.toStringAsFixed(1)} mmol/L',
+                                  style: TextStyle(
+                                      color: color,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(status,
+                                    style: TextStyle(
+                                        color: color.withOpacity(0.8),
+                                        fontSize: 12)),
+                              ],
+                            ),
+                            const Spacer(),
+                            // Time
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(timeStr,
+                                    style: const TextStyle(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500)),
+                                Text(dateStr,
+                                    style: const TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    childCount: history.length,
+                  ),
+                ),
               // Info card
               SliverToBoxAdapter(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: AppColors.surface,

@@ -29,44 +29,77 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   ) async {
     emit(state.copyWith(status: DashboardStatus.loading));
 
-    // Load all histories in parallel
+    // Phase 1: Load non-combinedData histories in parallel
+    // (Only queries that DON'T use HealthDataType.combinedData)
     final results = await Future.wait([
-      _healthRepo.getHeartRateHistory(),
-      _healthRepo.getStepHistory(),
-      _healthRepo.getSleepHistory(),
-      _healthRepo.getBloodOxygenHistory(),
-      _healthRepo.getBloodPressureHistory(),
-      _healthRepo.getTemperatureHistory(),
+      _healthRepo.getHeartRateHistory(), // 0
+      _healthRepo.getStepHistory(), // 1 (step-specific type=0 only)
+      _healthRepo.getSleepHistory(), // 2
+      _healthRepo.getBloodPressureHistory(), // 3
     ]);
 
     final hrResult = results[0];
     final stepResult = results[1];
     final sleepResult = results[2];
-    final spo2Result = results[3];
-    final bpResult = results[4];
-    final tempResult = results[5];
+    final bpResult = results[3];
+
+    // Phase 2: Query combinedData ONCE for step-fallback/temp/glucose/spo2
+    final combinedResult = await _healthRepo.getCombinedDataAll();
+
+    // Extract step history: prefer step-specific query, fallback to combinedData
+    List<StepRecord> finalSteps = stepResult.fold(
+      (_) => state.stepHistory,
+      (data) => data as List<StepRecord>,
+    );
+
+    List<TemperatureRecord> finalTemps = state.temperatureHistory;
+    List<BloodGlucoseRecord> finalGlucose = state.bloodGlucoseHistory;
+    List<BloodOxygenRecord> finalSpo2 = state.bloodOxygenHistory;
+
+    combinedResult.fold(
+      (_) {},
+      (combined) {
+        // Use combinedData steps if they have a higher count
+        // (step-specific query often returns stale/low counts on this device)
+        final stepSpecificMax = finalSteps.isEmpty
+            ? 0
+            : finalSteps.map((s) => s.steps).reduce((a, b) => a > b ? a : b);
+        final combinedMax = combined.steps.isEmpty
+            ? 0
+            : combined.steps
+                .map((s) => s.steps)
+                .reduce((a, b) => a > b ? a : b);
+        if (combinedMax > stepSpecificMax) {
+          finalSteps = combined.steps;
+          print(
+              '[DashboardBloc] Using combinedData steps (max=$combinedMax > step-specific max=$stepSpecificMax)');
+        }
+        finalTemps = combined.temps;
+        finalGlucose = combined.glucose;
+        finalSpo2 = combined.spo2;
+      },
+    );
+
+    print('[DashboardBloc] Step history synced: ${finalSteps.length} records');
+    if (finalSteps.isNotEmpty) {
+      print(
+          '[DashboardBloc] Latest step record: steps=${finalSteps.last.steps}, cal=${finalSteps.last.calories}, dist=${finalSteps.last.distanceKm}');
+    }
+    print(
+        '[DashboardBloc] Blood glucose history: ${finalGlucose.length} records');
 
     emit(state.copyWith(
       status: DashboardStatus.loaded,
       heartRateHistory: hrResult.fold((_) => state.heartRateHistory,
           (data) => data as List<HeartRateRecord>),
-      stepHistory: stepResult.fold((_) => state.stepHistory, (data) {
-        final steps = data as List<StepRecord>;
-        print('[DashboardBloc] Step history synced: ${steps.length} records');
-        if (steps.isNotEmpty) {
-          print(
-              '[DashboardBloc] Latest step record: steps=${steps.last.steps}, cal=${steps.last.calories}, dist=${steps.last.distanceKm}');
-        }
-        return steps;
-      }),
+      stepHistory: finalSteps,
       sleepHistory: sleepResult.fold(
           (_) => state.sleepHistory, (data) => data as List<SleepRecord>),
-      bloodOxygenHistory: spo2Result.fold((_) => state.bloodOxygenHistory,
-          (data) => data as List<BloodOxygenRecord>),
+      bloodOxygenHistory: finalSpo2,
       bloodPressureHistory: bpResult.fold((_) => state.bloodPressureHistory,
           (data) => data as List<BloodPressureRecord>),
-      temperatureHistory: tempResult.fold((_) => state.temperatureHistory,
-          (data) => data as List<TemperatureRecord>),
+      temperatureHistory: finalTemps,
+      bloodGlucoseHistory: finalGlucose,
     ));
   }
 

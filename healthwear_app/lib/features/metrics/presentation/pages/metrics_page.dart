@@ -146,8 +146,8 @@ class _MetricsPageState extends State<MetricsPage> {
                 title: 'Blood Glucose',
                 icon: Icons.opacity_rounded,
                 color: const Color(0xFFFF8F00),
-                currentValue: state.liveBloodGlucose != null
-                    ? '${state.liveBloodGlucose!.toStringAsFixed(1)} mmol/L'
+                currentValue: state.latestBloodGlucose != null
+                    ? '${state.latestBloodGlucose!.toStringAsFixed(1)} mmol/L'
                     : '--',
                 items: const [],
                 measurementType: MeasurementType.bloodGlucose,

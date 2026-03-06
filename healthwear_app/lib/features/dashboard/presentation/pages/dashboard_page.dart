@@ -183,8 +183,8 @@ class _ConnectedDashboard extends StatelessWidget {
                       // Blood Glucose
                       MetricCard(
                         title: 'Glucose',
-                        value: state.liveBloodGlucose != null
-                            ? state.liveBloodGlucose!.toStringAsFixed(1)
+                        value: state.latestBloodGlucose != null
+                            ? state.latestBloodGlucose!.toStringAsFixed(1)
                             : '--',
                         unit: 'mmol/L',
                         icon: Icons.opacity_rounded,

@@ -10,6 +10,7 @@ class DashboardState extends Equatable {
   final List<BloodOxygenRecord> bloodOxygenHistory;
   final List<BloodPressureRecord> bloodPressureHistory;
   final List<TemperatureRecord> temperatureHistory;
+  final List<BloodGlucoseRecord> bloodGlucoseHistory;
 
   // Live real-time values
   final int? liveHeartRate;
@@ -33,6 +34,7 @@ class DashboardState extends Equatable {
     this.bloodOxygenHistory = const [],
     this.bloodPressureHistory = const [],
     this.temperatureHistory = const [],
+    this.bloodGlucoseHistory = const [],
     this.liveHeartRate,
     this.liveSteps,
     this.liveSpO2,
@@ -54,6 +56,7 @@ class DashboardState extends Equatable {
     List<BloodOxygenRecord>? bloodOxygenHistory,
     List<BloodPressureRecord>? bloodPressureHistory,
     List<TemperatureRecord>? temperatureHistory,
+    List<BloodGlucoseRecord>? bloodGlucoseHistory,
     int? liveHeartRate,
     int? liveSteps,
     int? liveSpO2,
@@ -74,6 +77,7 @@ class DashboardState extends Equatable {
       bloodOxygenHistory: bloodOxygenHistory ?? this.bloodOxygenHistory,
       bloodPressureHistory: bloodPressureHistory ?? this.bloodPressureHistory,
       temperatureHistory: temperatureHistory ?? this.temperatureHistory,
+      bloodGlucoseHistory: bloodGlucoseHistory ?? this.bloodGlucoseHistory,
       liveHeartRate: liveHeartRate ?? this.liveHeartRate,
       liveSteps: liveSteps ?? this.liveSteps,
       liveSpO2: liveSpO2 ?? this.liveSpO2,
@@ -137,6 +141,17 @@ class DashboardState extends Equatable {
     return null;
   }
 
+  /// Latest blood glucose value.
+  double? get latestBloodGlucose {
+    if (liveBloodGlucose != null && liveBloodGlucose! > 0) {
+      return liveBloodGlucose;
+    }
+    if (bloodGlucoseHistory.isNotEmpty) {
+      return bloodGlucoseHistory.last.glucoseMmol;
+    }
+    return null;
+  }
+
   @override
   List<Object?> get props => [
         status,
@@ -146,6 +161,7 @@ class DashboardState extends Equatable {
         bloodOxygenHistory,
         bloodPressureHistory,
         temperatureHistory,
+        bloodGlucoseHistory,
         liveHeartRate,
         liveSteps,
         liveSpO2,

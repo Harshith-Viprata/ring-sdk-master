@@ -34,6 +34,19 @@ abstract class HealthRepository {
   Future<Either<Failure, List<BloodOxygenRecord>>> getBloodOxygenHistory();
   Future<Either<Failure, List<BloodPressureRecord>>> getBloodPressureHistory();
   Future<Either<Failure, List<TemperatureRecord>>> getTemperatureHistory();
+  Future<Either<Failure, List<BloodGlucoseRecord>>> getBloodGlucoseHistory();
+
+  /// Query combinedData ONCE and extract step/temp/glucose records together.
+  /// Prevents concurrent BLE query corruption.
+  Future<
+      Either<
+          Failure,
+          ({
+            List<StepRecord> steps,
+            List<TemperatureRecord> temps,
+            List<BloodGlucoseRecord> glucose,
+            List<BloodOxygenRecord> spo2
+          })>> getCombinedDataAll();
 
   // ─── On-Demand Measurement ───────────────────────────────────────────
 

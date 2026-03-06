@@ -81,6 +81,23 @@ class StepRecord extends Equatable {
 
   @override
   List<Object?> get props => [steps, calories, distanceKm, date];
+
+  /// Estimate calories from step count (approx 0.04 kcal/step for average person)
+  static int estimateCalories(int steps) => (steps * 0.04).round();
+
+  /// Estimate distance in km from step count (avg stride ~0.762m)
+  static double estimateDistanceKm(int steps) => (steps * 0.762) / 1000.0;
+}
+
+/// Domain entity for blood glucose history.
+class BloodGlucoseRecord extends Equatable {
+  final double glucoseMmol;
+  final DateTime time;
+
+  const BloodGlucoseRecord({required this.glucoseMmol, required this.time});
+
+  @override
+  List<Object?> get props => [glucoseMmol, time];
 }
 
 /// Domain entity for a single historical sleep record.

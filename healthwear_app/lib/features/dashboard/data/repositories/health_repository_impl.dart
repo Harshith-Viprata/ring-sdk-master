@@ -205,17 +205,15 @@ class HealthRepositoryImpl implements HealthRepository {
   @override
   Future<Either<Failure, List<StepRecord>>> getStepHistory() async {
     try {
+      // Only query step-specific data (type=0).
+      // If this returns 0, combinedData fallback is handled by getCombinedDataAll() in DashboardBloc.
       final response = await bleDataSource.queryHealthData(HealthDataType.step);
       print(
-          '[HealthRepo] getStepHistory raw response: $response (type: ${response?.runtimeType}, length: ${response?.length})');
+          '[HealthRepo] getStepHistory raw response length: ${response?.length}');
       final items = _extractList(response);
-      print(
-          '[HealthRepo] getStepHistory extracted items: ${items.length}, types: ${items.map((e) => e.runtimeType).toSet()}');
       final records = <StepRecord>[];
       for (final item in items) {
         if (item is StepDataInfo) {
-          print(
-              '[HealthRepo] StepDataInfo: step=${item.step}, cal=${item.calories}, dist=${item.distance}, ts=${item.startTimeStamp}');
           records.add(StepRecord(
             steps: item.step,
             calories: item.calories,
@@ -226,41 +224,6 @@ class HealthRepositoryImpl implements HealthRepository {
           ));
         }
       }
-
-      // Fallback: if step query returned 0.records, extract from combinedData
-      if (records.isEmpty) {
-        print('[HealthRepo] Step query empty, trying combinedData fallback...');
-        final combinedResponse =
-            await bleDataSource.queryHealthData(HealthDataType.combinedData);
-        final combinedItems = _extractList(combinedResponse);
-        print('[HealthRepo] combinedData items: ${combinedItems.length}');
-
-        // Aggregate steps per day from combinedData records
-        final Map<String, StepRecord> dayMap = {};
-        for (final item in combinedItems) {
-          if (item is CombinedDataDataInfo && item.step > 0) {
-            final date =
-                DateTime.fromMillisecondsSinceEpoch(item.startTimeStamp * 1000);
-            final dayKey = '${date.year}-${date.month}-${date.day}';
-            final existing = dayMap[dayKey];
-            // Keep the highest step count for the day (cumulative)
-            if (existing == null || item.step > existing.steps) {
-              dayMap[dayKey] = StepRecord(
-                steps: item.step,
-                calories: 0,
-                distanceKm: 0,
-                date: date,
-              );
-            }
-            print(
-                '[HealthRepo] CombinedData step: ${item.step}, date: $date, glucose: ${item.bloodGlucose}, temp: ${item.temperature}');
-          }
-        }
-        records.addAll(dayMap.values);
-        print(
-            '[HealthRepo] combinedData fallback produced ${records.length} step records');
-      }
-
       return Right(records);
     } catch (e) {
       print('[HealthRepo] getStepHistory error: $e');
@@ -375,6 +338,103 @@ class HealthRepositoryImpl implements HealthRepository {
       return Right(records);
     } catch (e) {
       return Left(BleFailure(message: 'getTemperatureHistory failed: $e'));
+    }
+  }
+
+  // ─── Blood Glucose History ──────────────────────────────────────────────
+
+  @override
+  Future<Either<Failure, List<BloodGlucoseRecord>>>
+      getBloodGlucoseHistory() async {
+    try {
+      final response =
+          await bleDataSource.queryHealthData(HealthDataType.combinedData);
+      final items = _extractList(response);
+      final records = <BloodGlucoseRecord>[];
+      for (final item in items) {
+        if (item is CombinedDataDataInfo && item.bloodGlucose > 0) {
+          records.add(BloodGlucoseRecord(
+            glucoseMmol: item.bloodGlucose,
+            time: DateTime.fromMillisecondsSinceEpoch(
+              item.startTimeStamp * 1000,
+            ),
+          ));
+        }
+      }
+      print('[HealthRepo] getBloodGlucoseHistory: ${records.length} records');
+      return Right(records);
+    } catch (e) {
+      return Left(BleFailure(message: 'getBloodGlucoseHistory failed: $e'));
+    }
+  }
+  // ─── Combined Data (single query) ──────────────────────────────────────
+
+  @override
+  Future<
+      Either<
+          Failure,
+          ({
+            List<StepRecord> steps,
+            List<TemperatureRecord> temps,
+            List<BloodGlucoseRecord> glucose,
+            List<BloodOxygenRecord> spo2
+          })>> getCombinedDataAll() async {
+    try {
+      final response =
+          await bleDataSource.queryHealthData(HealthDataType.combinedData);
+      final items = _extractList(response);
+      print(
+          '[HealthRepo] getCombinedDataAll: ${items.length} combinedData items');
+
+      final stepDayMap = <String, StepRecord>{};
+      final temps = <TemperatureRecord>[];
+      final glucose = <BloodGlucoseRecord>[];
+      final spo2 = <BloodOxygenRecord>[];
+
+      for (final item in items) {
+        if (item is CombinedDataDataInfo) {
+          final date =
+              DateTime.fromMillisecondsSinceEpoch(item.startTimeStamp * 1000);
+
+          // Steps: aggregate per-day, keep highest cumulative count
+          if (item.step > 0) {
+            final dayKey = '${date.year}-${date.month}-${date.day}';
+            final existing = stepDayMap[dayKey];
+            if (existing == null || item.step > existing.steps) {
+              stepDayMap[dayKey] = StepRecord(
+                steps: item.step,
+                calories: StepRecord.estimateCalories(item.step),
+                distanceKm: StepRecord.estimateDistanceKm(item.step),
+                date: date,
+              );
+            }
+          }
+
+          // Temperature: filter out bogus 0.15 readings
+          if (item.temperature > 30.0) {
+            temps.add(TemperatureRecord(celsius: item.temperature, time: date));
+          }
+
+          // Blood glucose
+          if (item.bloodGlucose > 0) {
+            glucose.add(
+                BloodGlucoseRecord(glucoseMmol: item.bloodGlucose, time: date));
+          }
+
+          // Blood oxygen (SpO2)
+          if (item.bloodOxygen > 0) {
+            spo2.add(BloodOxygenRecord(spo2: item.bloodOxygen, time: date));
+          }
+        }
+      }
+
+      final steps = stepDayMap.values.toList();
+      print(
+          '[HealthRepo] getCombinedDataAll results: ${steps.length} step days, ${temps.length} temps, ${glucose.length} glucose, ${spo2.length} spo2');
+      return Right((steps: steps, temps: temps, glucose: glucose, spo2: spo2));
+    } catch (e) {
+      print('[HealthRepo] getCombinedDataAll error: $e');
+      return Left(BleFailure(message: 'getCombinedDataAll failed: $e'));
     }
   }
 
