@@ -1,113 +1,143 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yc_product_plugin/yc_product_plugin.dart';
-import '../../core/providers/ble_provider.dart';
-import '../../core/ble/ble_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../features/device/presentation/bloc/device_bloc.dart';
 import '../theme/app_theme.dart';
 
-/// Top banner that shows BLE connection status and allows disconnect.
-class BleStatusBar extends ConsumerWidget {
+/// Top banner showing BLE connection status with disconnect button.
+class BleStatusBar extends StatelessWidget {
   const BleStatusBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(bleStateProvider);
-    final device = ref.watch(connectedDeviceProvider);
-    final isConnected = state == BluetoothState.connected;
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeviceBloc, DeviceState>(
+      builder: (context, state) {
+        final isConnected = state.status == DeviceConnectionStatus.connected;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: isConnected
-            ? AppColors.accentGreen.withOpacity(0.12)
-            : AppColors.accentRed.withOpacity(0.1),
-        border: Border(
-          bottom: BorderSide(
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
             color: isConnected
-                ? AppColors.accentGreen.withOpacity(0.3)
-                : AppColors.accentRed.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          _BleIcon(state: state),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  isConnected
-                      ? (device?.name ?? 'Connected')
-                      : _stateLabel(state),
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (isConnected && device?.mac != null)
-                  Text(
-                    device!.mac,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (isConnected)
-            GestureDetector(
-              onTap: () async {
-                await BleManager.instance.disconnect();
-                // Immediately update providers so UI reflects disconnected state
-                ref.read(bleStateProvider.notifier).state = BluetoothState.disconnected;
-                ref.read(connectedDeviceProvider.notifier).state = null;
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: AppColors.accentRed.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: AppColors.accentRed.withOpacity(0.3),
-                  ),
-                ),
-                child: const Text(
-                  'Disconnect',
-                  style: TextStyle(
-                    color: AppColors.accentRed,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                ? AppColors.accentGreen.withOpacity(0.12)
+                : AppColors.accentRed.withOpacity(0.1),
+            border: Border(
+              bottom: BorderSide(
+                color: isConnected
+                    ? AppColors.accentGreen.withOpacity(0.3)
+                    : AppColors.accentRed.withOpacity(0.2),
+                width: 1,
               ),
             ),
-        ],
-      ),
+          ),
+          child: Row(
+            children: [
+              _BleIcon(isConnected: isConnected),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      isConnected
+                          ? (state.deviceName ?? 'Connected')
+                          : _statusLabel(state.status),
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (isConnected && state.macAddress != null)
+                      Text(
+                        state.macAddress!,
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 11,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (state.batteryPercent > 0)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _batteryIcon(state.batteryPercent),
+                        color: AppColors.accentGreen,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        '${state.batteryPercent}%',
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (isConnected)
+                GestureDetector(
+                  onTap: () =>
+                      context.read<DeviceBloc>().add(DisconnectDevice()),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: AppColors.accentRed.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: AppColors.accentRed.withOpacity(0.3),
+                      ),
+                    ),
+                    child: const Text(
+                      'Disconnect',
+                      style: TextStyle(
+                        color: AppColors.accentRed,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  String _stateLabel(int state) {
-    switch (state) {
-      case BluetoothState.off: return 'Bluetooth Off';
-      case BluetoothState.connected: return 'Connected';
-      case BluetoothState.connectFailed: return 'Connection Failed';
-      case BluetoothState.disconnected: return 'Not Connected';
-      default: return 'Searching...';
+  String _statusLabel(DeviceConnectionStatus s) {
+    switch (s) {
+      case DeviceConnectionStatus.scanning:
+        return 'Scanning…';
+      case DeviceConnectionStatus.connecting:
+        return 'Connecting…';
+      case DeviceConnectionStatus.connected:
+        return 'Connected';
+      case DeviceConnectionStatus.disconnected:
+        return 'Not Connected';
     }
+  }
+
+  IconData _batteryIcon(int percent) {
+    if (percent > 80) return Icons.battery_full;
+    if (percent > 50) return Icons.battery_5_bar;
+    if (percent > 20) return Icons.battery_3_bar;
+    return Icons.battery_1_bar;
   }
 }
 
 class _BleIcon extends StatefulWidget {
-  final int state;
-  const _BleIcon({required this.state});
+  final bool isConnected;
+  const _BleIcon({required this.isConnected});
 
   @override
   State<_BleIcon> createState() => _BleIconState();
@@ -138,8 +168,8 @@ class _BleIconState extends State<_BleIcon>
 
   @override
   Widget build(BuildContext context) {
-    final isConnected = widget.state == BluetoothState.connected;
-    final color = isConnected ? AppColors.accentGreen : AppColors.accentRed;
+    final color =
+        widget.isConnected ? AppColors.accentGreen : AppColors.accentRed;
 
     return AnimatedBuilder(
       animation: _pulse,
@@ -152,7 +182,9 @@ class _BleIconState extends State<_BleIcon>
           border: Border.all(color: color.withOpacity(0.5)),
         ),
         child: Icon(
-          isConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+          widget.isConnected
+              ? Icons.bluetooth_connected
+              : Icons.bluetooth_disabled,
           color: color,
           size: 18,
         ),
