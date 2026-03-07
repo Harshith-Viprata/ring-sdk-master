@@ -14,14 +14,8 @@ class HealthRepositoryImpl implements HealthRepository {
 
   @override
   Stream<HealthReading> streamRealTimeHealth() {
-    print(
-        '[HealthRepo] streamRealTimeHealth() called — subscribing to eventStream (BleDataSource#${bleDataSource.hashCode})');
     // Filter raw SDK events for any health metric using NativeEventType constants
     return bleDataSource.eventStream
-        .map((e) {
-          print('[HealthRepo] eventStream RAW event: ${e.keys}');
-          return e;
-        })
         .where((e) =>
             e.containsKey(NativeEventType.deviceRealHeartRate) ||
             e.containsKey(NativeEventType.deviceRealBloodOxygen) ||
@@ -31,98 +25,94 @@ class HealthRepositoryImpl implements HealthRepository {
             e.containsKey(NativeEventType.deviceRealPressure) ||
             e.containsKey(NativeEventType.deviceRealBloodGlucose))
         .map((raw) {
-          print(
-              '[HealthRepo] streamRealTimeHealth received event: ${raw.keys}');
-          // Parse each metric type from the native event
-          int? heartRate;
-          int? spo2;
-          int? systolic;
-          int? diastolic;
-          double? temperature;
-          int? steps;
-          int? calories;
-          double? distanceKm;
-          int? stressLevel;
-          double? bloodGlucose;
+      print('[HealthRepo] streamRealTimeHealth received event: ${raw.keys}');
+      // Parse each metric type from the native event
+      int? heartRate;
+      int? spo2;
+      int? systolic;
+      int? diastolic;
+      double? temperature;
+      int? steps;
+      int? calories;
+      double? distanceKm;
+      int? stressLevel;
+      double? bloodGlucose;
 
-          if (raw.containsKey(NativeEventType.deviceRealHeartRate)) {
-            final d = raw[NativeEventType.deviceRealHeartRate];
-            final map = d is Map ? d : {'value': d};
-            final v = map['heartRate'] ?? map['value'] ?? 0;
-            heartRate = v is num ? v.toInt() : int.tryParse(v.toString());
-          }
+      if (raw.containsKey(NativeEventType.deviceRealHeartRate)) {
+        final d = raw[NativeEventType.deviceRealHeartRate];
+        final map = d is Map ? d : {'value': d};
+        final v = map['heartRate'] ?? map['value'] ?? 0;
+        heartRate = v is num ? v.toInt() : int.tryParse(v.toString());
+      }
 
-          if (raw.containsKey(NativeEventType.deviceRealBloodOxygen)) {
-            final d = raw[NativeEventType.deviceRealBloodOxygen];
-            final map = d is Map ? d : {'value': d};
-            final v = map['bloodOxygen'] ?? map['value'] ?? 0;
-            spo2 = v is num ? v.toInt() : int.tryParse(v.toString());
-          }
+      if (raw.containsKey(NativeEventType.deviceRealBloodOxygen)) {
+        final d = raw[NativeEventType.deviceRealBloodOxygen];
+        final map = d is Map ? d : {'value': d};
+        final v = map['bloodOxygen'] ?? map['value'] ?? 0;
+        spo2 = v is num ? v.toInt() : int.tryParse(v.toString());
+      }
 
-          if (raw.containsKey(NativeEventType.deviceRealBloodPressure)) {
-            final d = raw[NativeEventType.deviceRealBloodPressure];
-            if (d is Map) {
-              systolic =
-                  ((d['systolicBloodPressure'] ?? d['systolic'] ?? 0) as num)
-                      .toInt();
-              diastolic =
-                  ((d['diastolicBloodPressure'] ?? d['diastolic'] ?? 0) as num)
-                      .toInt();
-            }
-          }
+      if (raw.containsKey(NativeEventType.deviceRealBloodPressure)) {
+        final d = raw[NativeEventType.deviceRealBloodPressure];
+        if (d is Map) {
+          systolic = ((d['systolicBloodPressure'] ?? d['systolic'] ?? 0) as num)
+              .toInt();
+          diastolic =
+              ((d['diastolicBloodPressure'] ?? d['diastolic'] ?? 0) as num)
+                  .toInt();
+        }
+      }
 
-          if (raw.containsKey(NativeEventType.deviceRealTemperature)) {
-            final d = raw[NativeEventType.deviceRealTemperature];
-            final map = d is Map ? d : {'value': d};
-            final v = map['temperature'] ?? map['value'] ?? 0;
-            temperature =
-                v is num ? v.toDouble() : double.tryParse(v.toString());
-          }
+      if (raw.containsKey(NativeEventType.deviceRealTemperature)) {
+        final d = raw[NativeEventType.deviceRealTemperature];
+        final map = d is Map ? d : {'value': d};
+        final v = map['temperature'] ?? map['value'] ?? 0;
+        temperature = v is num ? v.toDouble() : double.tryParse(v.toString());
+      }
 
-          if (raw.containsKey(NativeEventType.deviceRealStep)) {
-            final d = raw[NativeEventType.deviceRealStep];
-            final map = d is Map ? d : {'value': d};
-            steps = ((map['sportStep'] ??
-                    map['step'] ??
-                    map['steps'] ??
-                    map['value'] ??
-                    0) as num)
-                .toInt();
-            calories =
-                ((map['sportCalorie'] ?? map['calories'] ?? 0) as num).toInt();
-            final dist = (map['sportDistance'] ?? map['distance'] ?? 0) as num;
-            distanceKm = dist.toDouble();
-          }
+      if (raw.containsKey(NativeEventType.deviceRealStep)) {
+        final d = raw[NativeEventType.deviceRealStep];
+        final map = d is Map ? d : {'value': d};
+        steps = ((map['sportStep'] ??
+                map['step'] ??
+                map['steps'] ??
+                map['value'] ??
+                0) as num)
+            .toInt();
+        calories =
+            ((map['sportCalorie'] ?? map['calories'] ?? 0) as num).toInt();
+        final dist = (map['sportDistance'] ?? map['distance'] ?? 0) as num;
+        distanceKm = dist.toDouble();
+      }
 
-          if (raw.containsKey(NativeEventType.deviceRealPressure)) {
-            final d = raw[NativeEventType.deviceRealPressure];
-            final map = d is Map ? d : {'value': d};
-            final v = map['pressure'] ?? map['value'] ?? 0;
-            stressLevel = v is num ? v.toInt() : int.tryParse(v.toString());
-          }
+      if (raw.containsKey(NativeEventType.deviceRealPressure)) {
+        final d = raw[NativeEventType.deviceRealPressure];
+        final map = d is Map ? d : {'value': d};
+        final v = map['pressure'] ?? map['value'] ?? 0;
+        stressLevel = v is num ? v.toInt() : int.tryParse(v.toString());
+      }
 
-          if (raw.containsKey(NativeEventType.deviceRealBloodGlucose)) {
-            final d = raw[NativeEventType.deviceRealBloodGlucose];
-            final map = d is Map ? d : {'value': d};
-            final v = map['bloodGlucose'] ?? map['value'] ?? 0;
-            bloodGlucose =
-                v is num ? v.toDouble() : double.tryParse(v.toString());
-          }
+      if (raw.containsKey(NativeEventType.deviceRealBloodGlucose)) {
+        final d = raw[NativeEventType.deviceRealBloodGlucose];
+        final map = d is Map ? d : {'value': d};
+        final v = map['bloodGlucose'] ?? map['value'] ?? 0;
+        bloodGlucose = v is num ? v.toDouble() : double.tryParse(v.toString());
+      }
 
-          return HealthReading(
-            heartRate: heartRate,
-            spo2: spo2,
-            systolic: systolic,
-            diastolic: diastolic,
-            temperature: temperature,
-            steps: steps,
-            calories: calories,
-            distanceKm: distanceKm,
-            stressLevel: stressLevel,
-            bloodGlucose: bloodGlucose,
-            timestamp: DateTime.now(),
-          );
-        });
+      return HealthReading(
+        heartRate: heartRate,
+        spo2: spo2,
+        systolic: systolic,
+        diastolic: diastolic,
+        temperature: temperature,
+        steps: steps,
+        calories: calories,
+        distanceKm: distanceKm,
+        stressLevel: stressLevel,
+        bloodGlucose: bloodGlucose,
+        timestamp: DateTime.now(),
+      );
+    });
   }
 
   // ─── Device Controls ───────────────────────────────────────────────────

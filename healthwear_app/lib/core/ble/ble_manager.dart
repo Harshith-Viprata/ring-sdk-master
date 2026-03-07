@@ -78,6 +78,22 @@ class BleManager {
     return false;
   }
 
+  /// Whether a previously connected device MAC is stored.
+  static Future<bool> hasSavedDevice() async {
+    final prefs = await SharedPreferences.getInstance();
+    final mac = prefs.getString(_prefKeyDeviceMac);
+    return mac != null && mac.isNotEmpty;
+  }
+
+  /// Return saved device info (name + mac) or null if none saved.
+  static Future<Map<String, String>?> getSavedDeviceInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final mac = prefs.getString(_prefKeyDeviceMac);
+    if (mac == null || mac.isEmpty) return null;
+    final name = prefs.getString(_prefKeyDeviceName) ?? 'YC Device';
+    return {'mac': mac, 'name': name};
+  }
+
   /// Connect to a device. Automatically fetches DeviceFeature after success.
   Future<bool> connect(BluetoothDevice device) async {
     bool ok = false;

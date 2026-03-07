@@ -27,17 +27,22 @@ class _DashboardPageState extends State<DashboardPage> {
     // Listen for messages from the foreground service TaskHandler
     FlutterForegroundTask.addTaskDataCallback(_onTaskData);
 
-    // If the device is already connected when this page mounts,
-    // the BlocListener won't fire (no status change). Dispatch manually.
+    // If the device is already connected or reconnecting when this page mounts,
+    // dispatch events accordingly.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final deviceState = context.read<DeviceBloc>().state;
+      final dashBloc = context.read<DashboardBloc>();
+
       if (deviceState.status == DeviceConnectionStatus.connected) {
         print(
             '[DashboardPage] Device already connected — dispatching initial events');
-        final dashBloc = context.read<DashboardBloc>();
         dashBloc.add(StartRealTimeMonitoring());
         dashBloc.add(LoadHealthData());
         HealthBackgroundService.start();
+      } else if (deviceState.status == DeviceConnectionStatus.reconnecting) {
+        // During reconnect, load cached data from Hive immediately
+        print('[DashboardPage] Device reconnecting — loading cached Hive data');
+        dashBloc.add(LoadHealthData());
       }
     });
   }
@@ -79,6 +84,12 @@ class _DashboardPageState extends State<DashboardPage> {
         builder: (context, deviceState) {
           final isConnected =
               deviceState.status == DeviceConnectionStatus.connected;
+          final isReconnecting =
+              deviceState.status == DeviceConnectionStatus.reconnecting;
+
+          // During reconnecting, show the full dashboard with cached Hive data.
+          // Phase 0 (Hive load) was already dispatched in initState.
+          final showDashboard = isConnected || isReconnecting;
 
           return Scaffold(
             backgroundColor: AppColors.background,
@@ -89,8 +100,9 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: const BleStatusBar(),
                 ),
                 Expanded(
-                  child:
-                      isConnected ? _ConnectedDashboard() : _NotConnectedView(),
+                  child: showDashboard
+                      ? _ConnectedDashboard()
+                      : _NotConnectedView(),
                 ),
               ],
             ),
@@ -153,6 +165,52 @@ class _ConnectedDashboard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
+                  // Syncing indicator — shows during data loading or reconnecting
+                  BlocBuilder<DeviceBloc, DeviceState>(
+                    builder: (context, deviceState) {
+                      final isSyncing =
+                          state.status == DashboardStatus.loading ||
+                              deviceState.status ==
+                                  DeviceConnectionStatus.reconnecting;
+                      if (!isSyncing) return const SizedBox.shrink();
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.accent.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: AppColors.accent.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.accent,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              deviceState.status ==
+                                      DeviceConnectionStatus.reconnecting
+                                  ? 'Reconnecting to ring…'
+                                  : 'Syncing health data…',
+                              style: const TextStyle(
+                                color: AppColors.accent,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                   // Quick actions
                   _QuickActionRow(),
                   const SizedBox(height: 20),

@@ -36,3 +36,6 @@ class DeviceSdkEvent extends DeviceEvent {
   @override
   List<Object?> get props => [payload];
 }
+
+/// Trigger auto-reconnect to previously paired device on app startup.
+class AutoReconnect extends DeviceEvent {}

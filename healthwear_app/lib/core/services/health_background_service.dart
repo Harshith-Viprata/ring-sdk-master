@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-
 import '../../features/dashboard/domain/entities/health_data.dart';
 import '../../features/dashboard/domain/repositories/health_repository.dart';
 import '../di/injection_container.dart';

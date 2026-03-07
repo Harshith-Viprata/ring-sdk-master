@@ -1,7 +1,13 @@
 part of 'device_bloc.dart';
 
 /// Connection status for UI.
-enum DeviceConnectionStatus { disconnected, scanning, connecting, connected }
+enum DeviceConnectionStatus {
+  disconnected,
+  scanning,
+  connecting,
+  reconnecting,
+  connected
+}
 
 /// State for the DeviceBloc.
 class DeviceState extends Equatable {

@@ -13,6 +13,8 @@ class BleStatusBar extends StatelessWidget {
     return BlocBuilder<DeviceBloc, DeviceState>(
       builder: (context, state) {
         final isConnected = state.status == DeviceConnectionStatus.connected;
+        final isReconnecting =
+            state.status == DeviceConnectionStatus.reconnecting;
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
@@ -21,19 +23,24 @@ class BleStatusBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: isConnected
                 ? AppColors.accentGreen.withOpacity(0.12)
-                : AppColors.accentRed.withOpacity(0.1),
+                : isReconnecting
+                    ? AppColors.accent.withOpacity(0.1)
+                    : AppColors.accentRed.withOpacity(0.1),
             border: Border(
               bottom: BorderSide(
                 color: isConnected
                     ? AppColors.accentGreen.withOpacity(0.3)
-                    : AppColors.accentRed.withOpacity(0.2),
+                    : isReconnecting
+                        ? AppColors.accent.withOpacity(0.3)
+                        : AppColors.accentRed.withOpacity(0.2),
                 width: 1,
               ),
             ),
           ),
           child: Row(
             children: [
-              _BleIcon(isConnected: isConnected),
+              _BleIcon(
+                  isConnected: isConnected, isReconnecting: isReconnecting),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -43,7 +50,9 @@ class BleStatusBar extends StatelessWidget {
                     Text(
                       isConnected
                           ? (state.deviceName ?? 'Connected')
-                          : _statusLabel(state.status),
+                          : isReconnecting
+                              ? 'Reconnecting to ${state.deviceName ?? 'device'}…'
+                              : _statusLabel(state.status),
                       style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 14,
@@ -120,6 +129,8 @@ class BleStatusBar extends StatelessWidget {
         return 'Scanning…';
       case DeviceConnectionStatus.connecting:
         return 'Connecting…';
+      case DeviceConnectionStatus.reconnecting:
+        return 'Reconnecting…';
       case DeviceConnectionStatus.connected:
         return 'Connected';
       case DeviceConnectionStatus.disconnected:
@@ -137,7 +148,8 @@ class BleStatusBar extends StatelessWidget {
 
 class _BleIcon extends StatefulWidget {
   final bool isConnected;
-  const _BleIcon({required this.isConnected});
+  final bool isReconnecting;
+  const _BleIcon({required this.isConnected, this.isReconnecting = false});
 
   @override
   State<_BleIcon> createState() => _BleIconState();
@@ -168,8 +180,11 @@ class _BleIconState extends State<_BleIcon>
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        widget.isConnected ? AppColors.accentGreen : AppColors.accentRed;
+    final color = widget.isConnected
+        ? AppColors.accentGreen
+        : widget.isReconnecting
+            ? AppColors.accent
+            : AppColors.accentRed;
 
     return AnimatedBuilder(
       animation: _pulse,
