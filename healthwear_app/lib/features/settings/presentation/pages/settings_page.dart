@@ -162,7 +162,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           subtitle: isConnected
                               ? state.deviceName ?? 'Connected'
                               : 'Not connected',
-                          onTap: () => context.push(AppRoutes.scan),
+                          onTap: () => context.push(
+                            isConnected ? AppRoutes.equipment : AppRoutes.scan,
+                          ),
                         ),
                         if (isConnected && state.macAddress != null)
                           _SettingsTile(

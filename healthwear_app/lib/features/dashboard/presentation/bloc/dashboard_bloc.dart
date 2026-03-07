@@ -23,6 +23,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<RealTimeHealthUpdate>(_onRealTimeUpdate);
     on<RefreshMetric>(_onRefreshMetric);
     on<BackgroundSyncComplete>(_onBackgroundSyncComplete);
+    on<RefreshData>(_onRefreshData);
   }
 
   Future<void> _onLoadHealthData(
@@ -190,8 +191,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }).catchError((e) {
       print('[DashboardBloc] setRealTimeUpload failed: $e');
     });
-    _healthRepo.enableHealthMonitoring(interval: 2).then((_) {
-      // TESTING — change back to 15
+    _healthRepo.enableHealthMonitoring().then((_) {
       print('[DashboardBloc] enableHealthMonitoring OK');
     }).catchError((e) {
       print('[DashboardBloc] enableHealthMonitoring failed: $e');
@@ -347,6 +347,26 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       bloodGlucoseHistory: glucoseRecords,
     ));
     print('[DashboardBloc] All Hive data reloaded into state');
+  }
+
+  /// Pull-to-refresh: instantly reload latest data from Hive.
+  /// Heavy BLE queries are done by the foreground service (every 2 min).
+  Future<void> _onRefreshData(
+    RefreshData event,
+    Emitter<DashboardState> emit,
+  ) async {
+    print('[DashboardBloc] RefreshData — reloading from Hive...');
+    emit(state.copyWith(
+      status: DashboardStatus.loaded,
+      heartRateHistory: HealthHiveService.getHeartRateRecords(),
+      stepHistory: HealthHiveService.getStepRecords(),
+      sleepHistory: HealthHiveService.getSleepRecords(),
+      bloodOxygenHistory: HealthHiveService.getBloodOxygenRecords(),
+      bloodPressureHistory: HealthHiveService.getBloodPressureRecords(),
+      temperatureHistory: HealthHiveService.getTemperatureRecords(),
+      bloodGlucoseHistory: HealthHiveService.getBloodGlucoseRecords(),
+    ));
+    print('[DashboardBloc] RefreshData complete — instant Hive reload');
   }
 
   @override

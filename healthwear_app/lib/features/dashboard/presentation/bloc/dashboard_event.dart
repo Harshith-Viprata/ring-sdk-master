@@ -30,3 +30,6 @@ class RealTimeHealthUpdate extends DashboardEvent {
 
 /// Foreground service completed a background sync — reload data from Hive.
 class BackgroundSyncComplete extends DashboardEvent {}
+
+/// Pull-to-refresh: re-query BLE device for latest data and reload from Hive.
+class RefreshData extends DashboardEvent {}

@@ -210,28 +210,37 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     if (payload.containsKey(NativeEventType.deviceInfo)) {
       final info = payload[NativeEventType.deviceInfo];
       if (info is Map) {
+        final battery = info['batteryPower'];
         emit(state.copyWith(
           deviceName: info['name']?.toString(),
           macAddress: info['mac']?.toString(),
+          batteryPercent: battery is int ? battery : null,
         ));
       }
     }
   }
 
-  /// Fetch battery and device details after connection
+  /// Fetch battery info after connection.
+  /// Name/MAC are already set from savedDevice or connect event.
   Future<void> _queryDeviceInfo() async {
+    print('[DeviceBloc] _queryDeviceInfo — querying battery...');
+    await Future.delayed(const Duration(seconds: 2));
     try {
-      final mac = await _bleDataSource.queryMacAddress();
-      final model = await _bleDataSource.queryDeviceModel();
-      if (!isClosed) {
+      final basicInfo = await _bleDataSource
+          .queryBasicInfo()
+          .timeout(const Duration(seconds: 5));
+      final battery = basicInfo?.batteryPower ?? 0;
+      print('[DeviceBloc] queryBasicInfo: battery=$battery');
+      if (!isClosed && battery > 0) {
         add(DeviceSdkEvent({
           NativeEventType.deviceInfo: {
-            'mac': mac,
-            'name': model,
+            'batteryPower': battery,
           }
         }));
       }
-    } catch (_) {}
+    } catch (e) {
+      print('[DeviceBloc] queryBasicInfo failed/timeout: $e');
+    }
   }
 
   @override

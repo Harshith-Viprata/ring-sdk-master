@@ -6,6 +6,7 @@ import '../../features/activity/presentation/pages/activity_page.dart';
 import '../../features/sleep/presentation/pages/sleep_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/device/presentation/pages/scan_page.dart';
+import '../../features/device/presentation/pages/my_equipment_page.dart';
 import '../../features/heart_rate/presentation/pages/heart_rate_page.dart';
 import '../../features/ecg/presentation/pages/ecg_page.dart';
 import '../../features/metrics/presentation/pages/metrics_page.dart';
@@ -23,6 +24,7 @@ abstract class AppRoutes {
   static const sleep = '/sleep';
   static const settings = '/settings';
   static const scan = '/scan';
+  static const equipment = '/equipment';
   static const heartRate = '/heart-rate';
   static const ecg = '/ecg';
   static const metrics = '/metrics';
@@ -103,6 +105,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.scan,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => const ScanPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.equipment,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const MyEquipmentPage(),
     ),
     GoRoute(
       path: AppRoutes.heartRate,

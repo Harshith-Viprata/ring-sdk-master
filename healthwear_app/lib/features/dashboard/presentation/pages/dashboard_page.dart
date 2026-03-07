@@ -120,198 +120,218 @@ class _ConnectedDashboard extends StatelessWidget {
       builder: (context, state) {
         final isLoading = state.status == DashboardStatus.loading;
 
-        return CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              backgroundColor: AppColors.background,
-              expandedHeight: 120,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: const EdgeInsets.fromLTRB(16, 0, 0, 16),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _greeting(),
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 12,
-                      ),
-                    ),
-                    const Text(
-                      'HealthWear',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () => context.push(AppRoutes.scan),
-                  icon: const Icon(
-                    Icons.watch_rounded,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
+        return RefreshIndicator(
+          color: AppColors.accent,
+          backgroundColor: AppColors.surface,
+          onRefresh: () async {
+            context.read<DashboardBloc>().add(RefreshData());
+            // Small delay for the spinner animation — refresh is instant (Hive-only)
+            await Future.delayed(const Duration(milliseconds: 500));
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Syncing indicator — shows during data loading or reconnecting
-                  BlocBuilder<DeviceBloc, DeviceState>(
-                    builder: (context, deviceState) {
-                      final isSyncing =
-                          state.status == DashboardStatus.loading ||
-                              deviceState.status ==
-                                  DeviceConnectionStatus.reconnecting;
-                      if (!isSyncing) return const SizedBox.shrink();
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: AppColors.accent.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: AppColors.accent.withOpacity(0.2),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.accent,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              deviceState.status ==
-                                      DeviceConnectionStatus.reconnecting
-                                  ? 'Reconnecting to ring…'
-                                  : 'Syncing health data…',
-                              style: const TextStyle(
-                                color: AppColors.accent,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  // Quick actions
-                  _QuickActionRow(),
-                  const SizedBox(height: 20),
-                  // Metric grid
-                  GridView.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 1.1,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                backgroundColor: AppColors.background,
+                expandedHeight: 120,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.fromLTRB(16, 0, 0, 16),
+                  title: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Heart Rate
-                      MetricCard(
-                        title: 'Heart Rate',
-                        value: state.latestHeartRate != null
-                            ? '${state.latestHeartRate}'
-                            : '--',
-                        unit: 'BPM',
-                        icon: Icons.favorite_rounded,
-                        color: AppColors.heartRate,
-                        isLoading: isLoading,
-                        onTap: () => context.push(AppRoutes.heartRate),
+                      Text(
+                        _greeting(),
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                        ),
                       ),
-                      // Steps
-                      MetricCard(
-                        title: 'Steps',
-                        value:
-                            state.todaySteps > 0 ? '${state.todaySteps}' : '--',
-                        unit: '',
-                        icon: Icons.directions_walk_rounded,
-                        color: AppColors.steps,
-                        isLoading: isLoading,
-                        onTap: () => context.push(AppRoutes.activity),
-                      ),
-                      // Blood Oxygen
-                      MetricCard(
-                        title: 'Blood Oxygen',
-                        value: state.liveSpO2 != null
-                            ? '${state.liveSpO2}'
-                            : state.bloodOxygenHistory.isNotEmpty
-                                ? '${state.bloodOxygenHistory.last.spo2}'
-                                : '--',
-                        unit: '%',
-                        icon: Icons.water_drop_rounded,
-                        color: AppColors.bloodOxygen,
-                        isLoading: isLoading,
-                        onTap: () => context.push(AppRoutes.bloodOxygen),
-                      ),
-                      // Blood Pressure
-                      MetricCard(
-                        title: 'Blood Pressure',
-                        value: state.liveSystolic != null
-                            ? '${state.liveSystolic}/${state.liveDiastolic ?? 0}'
-                            : state.bloodPressureHistory.isNotEmpty
-                                ? '${state.bloodPressureHistory.last.systolic}/${state.bloodPressureHistory.last.diastolic}'
-                                : '--',
-                        unit: 'mmHg',
-                        icon: Icons.bloodtype_rounded,
-                        color: AppColors.bloodPressure,
-                        isLoading: isLoading,
-                        onTap: () => context.push(AppRoutes.bloodPressure),
-                      ),
-                      // Temperature
-                      MetricCard(
-                        title: 'Temperature',
-                        value: state.liveTemperature != null
-                            ? state.liveTemperature!.toStringAsFixed(1)
-                            : state.temperatureHistory.isNotEmpty
-                                ? state.temperatureHistory.last.celsius
-                                    .toStringAsFixed(1)
-                                : '--',
-                        unit: '°C',
-                        icon: Icons.thermostat_rounded,
-                        color: AppColors.temperature,
-                        isLoading: isLoading,
-                        onTap: () => context.push(AppRoutes.temperature),
-                      ),
-                      // Blood Glucose
-                      MetricCard(
-                        title: 'Glucose',
-                        value: state.latestBloodGlucose != null
-                            ? state.latestBloodGlucose!.toStringAsFixed(1)
-                            : '--',
-                        unit: 'mmol/L',
-                        icon: Icons.opacity_rounded,
-                        color: const Color(0xFFFF8F00),
-                        isLoading: isLoading,
-                        onTap: () => context.push(AppRoutes.bloodGlucose),
+                      const Text(
+                        'HealthWear',
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  // ECG banner
-                  _EcgBanner(
-                    onTap: () => context.push(AppRoutes.ecg),
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      final deviceState = context.read<DeviceBloc>().state;
+                      if (deviceState.status ==
+                          DeviceConnectionStatus.connected) {
+                        context.push(AppRoutes.equipment);
+                      } else {
+                        context.push(AppRoutes.scan);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.watch_rounded,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
-                ]),
+                ],
               ),
-            ),
-          ],
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Syncing indicator — shows during data loading or reconnecting
+                    BlocBuilder<DeviceBloc, DeviceState>(
+                      builder: (context, deviceState) {
+                        final isSyncing =
+                            state.status == DashboardStatus.loading ||
+                                deviceState.status ==
+                                    DeviceConnectionStatus.reconnecting;
+                        if (!isSyncing) return const SizedBox.shrink();
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: AppColors.accent.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.accent,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                deviceState.status ==
+                                        DeviceConnectionStatus.reconnecting
+                                    ? 'Reconnecting to ring…'
+                                    : 'Syncing health data…',
+                                style: const TextStyle(
+                                  color: AppColors.accent,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    // Quick actions
+                    _QuickActionRow(),
+                    const SizedBox(height: 20),
+                    // Metric grid
+                    GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 1.1,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        // Heart Rate
+                        MetricCard(
+                          title: 'Heart Rate',
+                          value: state.latestHeartRate != null
+                              ? '${state.latestHeartRate}'
+                              : '--',
+                          unit: 'BPM',
+                          icon: Icons.favorite_rounded,
+                          color: AppColors.heartRate,
+                          isLoading: isLoading,
+                          onTap: () => context.push(AppRoutes.heartRate),
+                        ),
+                        // Steps
+                        MetricCard(
+                          title: 'Steps',
+                          value: state.todaySteps > 0
+                              ? '${state.todaySteps}'
+                              : '--',
+                          unit: '',
+                          icon: Icons.directions_walk_rounded,
+                          color: AppColors.steps,
+                          isLoading: isLoading,
+                          onTap: () => context.push(AppRoutes.activity),
+                        ),
+                        // Blood Oxygen
+                        MetricCard(
+                          title: 'Blood Oxygen',
+                          value: state.liveSpO2 != null
+                              ? '${state.liveSpO2}'
+                              : state.bloodOxygenHistory.isNotEmpty
+                                  ? '${state.bloodOxygenHistory.last.spo2}'
+                                  : '--',
+                          unit: '%',
+                          icon: Icons.water_drop_rounded,
+                          color: AppColors.bloodOxygen,
+                          isLoading: isLoading,
+                          onTap: () => context.push(AppRoutes.bloodOxygen),
+                        ),
+                        // Blood Pressure
+                        MetricCard(
+                          title: 'Blood Pressure',
+                          value: state.liveSystolic != null
+                              ? '${state.liveSystolic}/${state.liveDiastolic ?? 0}'
+                              : state.bloodPressureHistory.isNotEmpty
+                                  ? '${state.bloodPressureHistory.last.systolic}/${state.bloodPressureHistory.last.diastolic}'
+                                  : '--',
+                          unit: 'mmHg',
+                          icon: Icons.bloodtype_rounded,
+                          color: AppColors.bloodPressure,
+                          isLoading: isLoading,
+                          onTap: () => context.push(AppRoutes.bloodPressure),
+                        ),
+                        // Temperature
+                        MetricCard(
+                          title: 'Temperature',
+                          value: state.liveTemperature != null
+                              ? state.liveTemperature!.toStringAsFixed(1)
+                              : state.temperatureHistory.isNotEmpty
+                                  ? state.temperatureHistory.last.celsius
+                                      .toStringAsFixed(1)
+                                  : '--',
+                          unit: '°C',
+                          icon: Icons.thermostat_rounded,
+                          color: AppColors.temperature,
+                          isLoading: isLoading,
+                          onTap: () => context.push(AppRoutes.temperature),
+                        ),
+                        // Blood Glucose
+                        MetricCard(
+                          title: 'Glucose',
+                          value: state.latestBloodGlucose != null
+                              ? state.latestBloodGlucose!.toStringAsFixed(1)
+                              : '--',
+                          unit: 'mmol/L',
+                          icon: Icons.opacity_rounded,
+                          color: const Color(0xFFFF8F00),
+                          isLoading: isLoading,
+                          onTap: () => context.push(AppRoutes.bloodGlucose),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // ECG banner
+                    _EcgBanner(
+                      onTap: () => context.push(AppRoutes.ecg),
+                    ),
+                  ]),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
