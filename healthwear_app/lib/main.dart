@@ -5,6 +5,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'config/routes/app_router.dart';
 import 'core/di/injection_container.dart';
+import 'core/services/health_background_service.dart';
+import 'core/services/health_hive_service.dart';
 import 'features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'features/device/presentation/bloc/device_bloc.dart';
 import 'features/ecg/presentation/bloc/ecg_bloc.dart';
@@ -28,6 +30,12 @@ void main() async {
   );
 
   await initDependencies();
+
+  // Initialize local storage (Hive boxes for health history persistence)
+  await HealthHiveService.init();
+
+  // Initialize the foreground service configuration (15-min interval)
+  HealthBackgroundService.init();
 
   runApp(const HealthWearApp());
 }

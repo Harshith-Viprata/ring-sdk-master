@@ -1,28 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_router.dart';
+import '../../../../core/services/health_background_service.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/ble_status_bar.dart';
 import '../../../../shared/widgets/metric_card.dart';
 import '../../../device/presentation/bloc/device_bloc.dart';
 import '../bloc/dashboard_bloc.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Listen for messages from the foreground service TaskHandler
+    FlutterForegroundTask.addTaskDataCallback(_onTaskData);
+  }
+
+  @override
+  void dispose() {
+    FlutterForegroundTask.removeTaskDataCallback(_onTaskData);
+    super.dispose();
+  }
+
+  void _onTaskData(Object data) {
+    print('[DashboardPage] Received from BG service: $data');
+    if (data is Map && data['type'] == 'sync_complete') {
+      // Reload all data from Hive into the DashboardBloc
+      if (mounted) {
+        context.read<DashboardBloc>().add(BackgroundSyncComplete());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<DeviceBloc, DeviceState>(
-      listenWhen: (prev, curr) =>
-          prev.status != DeviceConnectionStatus.connected &&
-          curr.status == DeviceConnectionStatus.connected,
+      listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, deviceState) {
-        // Fire exactly once when device transitions to connected
-        final dashBloc = context.read<DashboardBloc>();
-        dashBloc.add(LoadHealthData());
-        dashBloc.add(StartRealTimeMonitoring());
+        if (deviceState.status == DeviceConnectionStatus.connected) {
+          // Fire health data load & real-time monitoring
+          final dashBloc = context.read<DashboardBloc>();
+          dashBloc.add(LoadHealthData());
+          dashBloc.add(StartRealTimeMonitoring());
+          // Start the foreground service for background syncs
+          HealthBackgroundService.start();
+        } else if (deviceState.status == DeviceConnectionStatus.disconnected) {
+          // Stop the foreground service when ring disconnects
+          HealthBackgroundService.stop();
+        }
       },
       child: BlocBuilder<DeviceBloc, DeviceState>(
         builder: (context, deviceState) {

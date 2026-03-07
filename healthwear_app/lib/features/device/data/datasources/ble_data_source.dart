@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:yc_product_plugin/yc_product_plugin.dart';
 import '../../../../core/ble/ble_manager.dart';
+import '../../../../core/ble/ble_event_handler.dart';
 
 /// Data-source adapter that delegates all BLE operations to [BleManager].
 ///
@@ -16,16 +17,26 @@ class BleDataSource {
   /// Whether the SDK listener has been wired.
   bool _listening = false;
 
+  /// Whether init() has already completed — prevents destructive re-init.
+  bool _initialized = false;
+
   BleDataSource({BleManager? manager}) : _mgr = manager ?? BleManager.instance;
 
   // ─── Lifecycle ──────────────────────────────────────────────────────────
 
   /// Initialise the plugin and start the native event stream.
+  /// **Idempotent**: skips if already initialized to prevent autoConnect
+  /// from killing active BLE measurements.
   Future<void> init({bool reconnect = true, bool log = false}) async {
+    if (_initialized) {
+      print('[BleDataSource] Already initialized — skipping');
+      return;
+    }
     await _mgr.init();
     _startListening();
     // Attempt auto-reconnect to previously paired device
     await _mgr.autoConnect();
+    _initialized = true;
   }
 
   void _startListening() {
@@ -36,6 +47,10 @@ class BleDataSource {
         final mapped = Map<dynamic, dynamic>.from(event);
         print('[BleDataSource] eventStream emit: ${mapped.keys}');
         _eventController.add(mapped);
+
+        // Route ALL events to BleEventHandler for measurement & real-time UI.
+        // This bypasses the potentially dead DeviceBloc subscription.
+        BleEventHandler.instance.handleEvent(mapped);
       }
     });
   }

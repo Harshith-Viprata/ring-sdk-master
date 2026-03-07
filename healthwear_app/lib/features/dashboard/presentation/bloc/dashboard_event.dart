@@ -27,3 +27,6 @@ class RealTimeHealthUpdate extends DashboardEvent {
   @override
   List<Object?> get props => [data];
 }
+
+/// Foreground service completed a background sync — reload data from Hive.
+class BackgroundSyncComplete extends DashboardEvent {}

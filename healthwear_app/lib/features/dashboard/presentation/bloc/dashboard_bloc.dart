@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/health_data.dart';
 import '../../domain/repositories/health_repository.dart';
+import '../../../../core/services/health_hive_service.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -21,6 +22,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<StartRealTimeMonitoring>(_onStartRealTime);
     on<RealTimeHealthUpdate>(_onRealTimeUpdate);
     on<RefreshMetric>(_onRefreshMetric);
+    on<BackgroundSyncComplete>(_onBackgroundSyncComplete);
   }
 
   Future<void> _onLoadHealthData(
@@ -110,6 +112,21 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       temperatureHistory: finalTemps,
       bloodGlucoseHistory: finalGlucose,
     ));
+
+    // Persist the freshly-synced data to Hive for offline access
+    _saveAllToHive(state);
+  }
+
+  /// Persist current state's health records to Hive.
+  void _saveAllToHive(DashboardState s) {
+    HealthHiveService.saveHeartRateRecords(s.heartRateHistory);
+    HealthHiveService.saveStepRecords(s.stepHistory);
+    HealthHiveService.saveSleepRecords(s.sleepHistory);
+    HealthHiveService.saveBloodOxygenRecords(s.bloodOxygenHistory);
+    HealthHiveService.saveBloodPressureRecords(s.bloodPressureHistory);
+    HealthHiveService.saveTemperatureRecords(s.temperatureHistory);
+    HealthHiveService.saveBloodGlucoseRecords(s.bloodGlucoseHistory);
+    print('[DashboardBloc] Synced data saved to Hive');
   }
 
   Future<void> _onStartRealTime(
@@ -204,6 +221,28 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           ? (d['distanceKm'] as num).toDouble()
           : state.liveDistance,
     ));
+
+    // Persist real-time readings to Hive
+    if (d['heartRate'] is num && (d['heartRate'] as num).toInt() > 0) {
+      HealthHiveService.saveRealtimeHeartRate((d['heartRate'] as num).toInt());
+    }
+    if (d['spo2'] is num && (d['spo2'] as num).toInt() > 0) {
+      HealthHiveService.saveRealtimeSpO2((d['spo2'] as num).toInt());
+    }
+    if (d['temperature'] is num && (d['temperature'] as num).toDouble() > 0) {
+      HealthHiveService.saveRealtimeTemperature(
+          (d['temperature'] as num).toDouble());
+    }
+    if (d['systolic'] is num && (d['systolic'] as num).toInt() > 0) {
+      HealthHiveService.saveRealtimeBP(
+        (d['systolic'] as num).toInt(),
+        (d['diastolic'] as num).toInt(),
+      );
+    }
+    if (d['bloodGlucose'] is num && (d['bloodGlucose'] as num).toDouble() > 0) {
+      HealthHiveService.saveRealtimeGlucose(
+          (d['bloodGlucose'] as num).toDouble());
+    }
   }
 
   Future<void> _onRefreshMetric(
@@ -230,6 +269,24 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         });
         break;
     }
+  }
+
+  /// Reload all data from Hive after a background service sync.
+  Future<void> _onBackgroundSyncComplete(
+    BackgroundSyncComplete event,
+    Emitter<DashboardState> emit,
+  ) async {
+    print('[DashboardBloc] BackgroundSyncComplete — reloading from Hive');
+    emit(state.copyWith(
+      heartRateHistory: HealthHiveService.getHeartRateRecords(),
+      stepHistory: HealthHiveService.getStepRecords(),
+      sleepHistory: HealthHiveService.getSleepRecords(),
+      bloodOxygenHistory: HealthHiveService.getBloodOxygenRecords(),
+      bloodPressureHistory: HealthHiveService.getBloodPressureRecords(),
+      temperatureHistory: HealthHiveService.getTemperatureRecords(),
+      bloodGlucoseHistory: HealthHiveService.getBloodGlucoseRecords(),
+    ));
+    print('[DashboardBloc] All Hive data reloaded into state');
   }
 
   @override

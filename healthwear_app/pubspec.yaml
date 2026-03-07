@@ -42,6 +42,9 @@ dependencies:
   hive_flutter: ^1.1.0
   hive: ^2.2.3
 
+  # === BACKGROUND SERVICE ===
+  flutter_foreground_task: ^8.7.0
+
   # === UTILITIES ===
   path_provider: ^2.1.2
   intl: ^0.19.0
