@@ -80,7 +80,13 @@ class HealthHiveService {
     final box = Hive.box<Map>(_stepBox);
     for (final r in records) {
       final key = '${r.date.year}-${r.date.month}-${r.date.day}';
-      // Always overwrite steps for the same day (accumulative)
+      // Only overwrite if new step count is higher (prevents combinedData
+      // overwriting the correct step-specific count with a lower snapshot).
+      final existing = box.get(key);
+      if (existing != null) {
+        final existingSteps = (existing['steps'] as num?)?.toInt() ?? 0;
+        if (r.steps <= existingSteps) continue; // Keep the higher count
+      }
       await box.put(key, {
         'steps': r.steps,
         'calories': r.calories,

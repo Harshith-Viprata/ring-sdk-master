@@ -15,19 +15,29 @@ void startCallback() {
 
 // ─── Task handler — runs in the foreground service ──────────────────────────
 class HealthDataTaskHandler extends TaskHandler {
+  /// Wait for dependencies registered by main() — they run in the same isolate.
+  Future<bool> _waitForDeps({int maxWaitSec = 10}) async {
+    for (int i = 0; i < maxWaitSec * 10; i++) {
+      if (sl.isRegistered<HealthRepository>()) return true;
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return false;
+  }
+
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     print('[BGService] onStart — starter: $starter');
 
-    // On Android v9 runs in the SAME isolate — reuse existing deps.
-    // Only init if truly missing (app killed while service persisted).
+    // Wait for main() to register dependencies (same isolate).
     if (!sl.isRegistered<HealthRepository>()) {
-      print('[BGService] Dependencies missing — initializing...');
-      await initDependencies();
-      print('[BGService] Dependencies initialized OK');
-    } else {
-      print('[BGService] Dependencies already available — reusing');
+      print('[BGService] Waiting for main() to register dependencies...');
+      final ok = await _waitForDeps();
+      if (!ok) {
+        print('[BGService] Dependencies not available after 10s — skipping');
+        return;
+      }
     }
+    print('[BGService] Dependencies OK');
 
     // Initialize Hive (idempotent — safe to call multiple times)
     await HealthHiveService.init();
@@ -42,8 +52,8 @@ class HealthDataTaskHandler extends TaskHandler {
 
     try {
       if (!sl.isRegistered<HealthRepository>()) {
-        print('[BGService] Dependencies not found — initializing...');
-        await initDependencies();
+        print('[BGService] Dependencies not available — skipping sync');
+        return;
       }
 
       final healthRepo = sl<HealthRepository>();
@@ -110,10 +120,12 @@ class HealthDataTaskHandler extends TaskHandler {
       );
 
       // Notify the UI to reload from Hive
+      print('[BGService] Sending sync_complete to main isolate...');
       FlutterForegroundTask.sendDataToMain({
         'type': 'sync_complete',
         'timestamp': timestamp.toIso8601String(),
       });
+      print('[BGService] sync_complete sent');
     } catch (e) {
       print('[BGService] Sync error: $e');
     }

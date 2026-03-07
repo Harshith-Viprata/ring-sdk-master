@@ -17,6 +17,8 @@ final sl = GetIt.instance;
 
 /// Register all dependencies.
 Future<void> initDependencies() async {
+  print('[DI] Registering dependencies...');
+
   // ─── Data Sources ────────────────────────────────────────────────────
   sl.registerLazySingleton<BleDataSource>(() => BleDataSource());
 

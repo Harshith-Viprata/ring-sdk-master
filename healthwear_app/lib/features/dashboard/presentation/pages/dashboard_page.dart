@@ -22,8 +22,24 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
+    // Initialize the communication port for receiving data from the service
+    FlutterForegroundTask.initCommunicationPort();
     // Listen for messages from the foreground service TaskHandler
     FlutterForegroundTask.addTaskDataCallback(_onTaskData);
+
+    // If the device is already connected when this page mounts,
+    // the BlocListener won't fire (no status change). Dispatch manually.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final deviceState = context.read<DeviceBloc>().state;
+      if (deviceState.status == DeviceConnectionStatus.connected) {
+        print(
+            '[DashboardPage] Device already connected — dispatching initial events');
+        final dashBloc = context.read<DashboardBloc>();
+        dashBloc.add(StartRealTimeMonitoring());
+        dashBloc.add(LoadHealthData());
+        HealthBackgroundService.start();
+      }
+    });
   }
 
   @override
@@ -48,10 +64,10 @@ class _DashboardPageState extends State<DashboardPage> {
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, deviceState) {
         if (deviceState.status == DeviceConnectionStatus.connected) {
-          // Fire health data load & real-time monitoring
+          // Fire real-time monitoring first (fast), then health data load (slow BLE queries)
           final dashBloc = context.read<DashboardBloc>();
-          dashBloc.add(LoadHealthData());
           dashBloc.add(StartRealTimeMonitoring());
+          dashBloc.add(LoadHealthData());
           // Start the foreground service for background syncs
           HealthBackgroundService.start();
         } else if (deviceState.status == DeviceConnectionStatus.disconnected) {

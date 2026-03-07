@@ -45,7 +45,7 @@ class BleDataSource {
     _mgr.onEvent((event) {
       if (event is Map) {
         final mapped = Map<dynamic, dynamic>.from(event);
-        print('[BleDataSource] eventStream emit: ${mapped.keys}');
+        print('[BleDataSource#${hashCode}] eventStream emit: ${mapped.keys}');
         _eventController.add(mapped);
 
         // Route ALL events to BleEventHandler for measurement & real-time UI.

@@ -13,7 +13,7 @@ part 'dashboard_state.dart';
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final HealthRepository _healthRepo;
   StreamSubscription<HealthReading>? _healthSub;
-  Timer? _refreshTimer;
+  DateTime? _lastHiveSave;
 
   DashboardBloc({required HealthRepository healthRepository})
       : _healthRepo = healthRepository,
@@ -29,9 +29,34 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     LoadHealthData event,
     Emitter<DashboardState> emit,
   ) async {
-    emit(state.copyWith(status: DashboardStatus.loading));
+    // Phase 0: Instant Hive load — show cached data immediately
+    final hiveHr = HealthHiveService.getHeartRateRecords();
+    final hiveSteps = HealthHiveService.getStepRecords();
+    final hiveSleep = HealthHiveService.getSleepRecords();
+    final hiveSpo2 = HealthHiveService.getBloodOxygenRecords();
+    final hiveBp = HealthHiveService.getBloodPressureRecords();
+    final hiveTemp = HealthHiveService.getTemperatureRecords();
+    final hiveGlu = HealthHiveService.getBloodGlucoseRecords();
 
-    // Phase 1: Load non-combinedData histories in parallel
+    final hasHiveData = hiveHr.isNotEmpty || hiveSteps.isNotEmpty;
+    if (hasHiveData) {
+      emit(state.copyWith(
+        status: DashboardStatus.loaded,
+        heartRateHistory: hiveHr,
+        stepHistory: hiveSteps,
+        sleepHistory: hiveSleep,
+        bloodOxygenHistory: hiveSpo2,
+        bloodPressureHistory: hiveBp,
+        temperatureHistory: hiveTemp,
+        bloodGlucoseHistory: hiveGlu,
+      ));
+      print(
+          '[DashboardBloc] Phase 0: Loaded ${hiveHr.length} HR, ${hiveSteps.length} steps from Hive');
+    } else {
+      emit(state.copyWith(status: DashboardStatus.loading));
+    }
+
+    // Phase 1: Fresh ring sync (runs in background)
     // (Only queries that DON'T use HealthDataType.combinedData)
     final results = await Future.wait([
       _healthRepo.getHeartRateHistory(), // 0
@@ -133,6 +158,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     StartRealTimeMonitoring event,
     Emitter<DashboardState> emit,
   ) async {
+    print('[DashboardBloc] _onStartRealTime entered');
     // IMPORTANT: Subscribe to the real-time stream FIRST before any SDK
     // await calls that could hang (BLE commands sometimes time out).
     _healthSub?.cancel();
@@ -170,11 +196,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       print('[DashboardBloc] enableHealthMonitoring failed: $e');
     });
 
-    // Start 60s periodic refresh to re-sync historical data
-    _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(const Duration(seconds: 60), (_) {
-      add(LoadHealthData());
-    });
+    // No periodic timer — foreground service handles background syncs
   }
 
   void _onRealTimeUpdate(
@@ -222,7 +244,14 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           : state.liveDistance,
     ));
 
-    // Persist real-time readings to Hive
+    // Throttle: save real-time readings to Hive at most once per 60 seconds
+    final now = DateTime.now();
+    if (_lastHiveSave != null &&
+        now.difference(_lastHiveSave!) < const Duration(seconds: 60)) {
+      return; // Skip this save cycle
+    }
+    _lastHiveSave = now;
+
     if (d['heartRate'] is num && (d['heartRate'] as num).toInt() > 0) {
       HealthHiveService.saveRealtimeHeartRate((d['heartRate'] as num).toInt());
     }
@@ -243,6 +272,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       HealthHiveService.saveRealtimeGlucose(
           (d['bloodGlucose'] as num).toDouble());
     }
+    print('[DashboardBloc] Real-time data saved to Hive (throttled)');
   }
 
   Future<void> _onRefreshMetric(
@@ -278,6 +308,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   ) async {
     print('[DashboardBloc] BackgroundSyncComplete — reloading from Hive');
     emit(state.copyWith(
+      status: DashboardStatus.loaded,
       heartRateHistory: HealthHiveService.getHeartRateRecords(),
       stepHistory: HealthHiveService.getStepRecords(),
       sleepHistory: HealthHiveService.getSleepRecords(),
@@ -292,7 +323,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   @override
   Future<void> close() {
     _healthSub?.cancel();
-    _refreshTimer?.cancel();
     return super.close();
   }
 }
