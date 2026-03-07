@@ -15,9 +15,15 @@ import '../../features/ecg/presentation/bloc/ecg_bloc.dart';
 
 final sl = GetIt.instance;
 
-/// Register all dependencies.
+/// Register all dependencies (idempotent — safe to call multiple times).
 Future<void> initDependencies() async {
   print('[DI] Registering dependencies...');
+
+  // Guard: skip if already registered (e.g. called from both main() and foreground service)
+  if (sl.isRegistered<BleDataSource>()) {
+    print('[DI] Dependencies already registered — skipping');
+    return;
+  }
 
   // ─── Data Sources ────────────────────────────────────────────────────
   sl.registerLazySingleton<BleDataSource>(() => BleDataSource());
@@ -55,4 +61,6 @@ Future<void> initDependencies() async {
   sl.registerFactory(
     () => EcgBloc(bleDataSource: sl(), ecgRepository: sl()),
   );
+
+  print('[DI] All dependencies registered');
 }

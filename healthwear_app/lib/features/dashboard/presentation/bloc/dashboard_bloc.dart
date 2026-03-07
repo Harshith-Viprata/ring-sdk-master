@@ -190,7 +190,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }).catchError((e) {
       print('[DashboardBloc] setRealTimeUpload failed: $e');
     });
-    _healthRepo.enableHealthMonitoring().then((_) {
+    _healthRepo.enableHealthMonitoring(interval: 2).then((_) {
+      // TESTING — change back to 15
       print('[DashboardBloc] enableHealthMonitoring OK');
     }).catchError((e) {
       print('[DashboardBloc] enableHealthMonitoring failed: $e');
@@ -307,15 +308,43 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     print('[DashboardBloc] BackgroundSyncComplete — reloading from Hive');
+    final hrRecords = HealthHiveService.getHeartRateRecords();
+    final stepRecords = HealthHiveService.getStepRecords();
+    final sleepRecords = HealthHiveService.getSleepRecords();
+    final spo2Records = HealthHiveService.getBloodOxygenRecords();
+    final bpRecords = HealthHiveService.getBloodPressureRecords();
+    final tempRecords = HealthHiveService.getTemperatureRecords();
+    final glucoseRecords = HealthHiveService.getBloodGlucoseRecords();
+
+    // Debug: print last 5 HR record timestamps to see interval pattern
+    if (hrRecords.isNotEmpty) {
+      final last5 = hrRecords.length > 5
+          ? hrRecords.sublist(hrRecords.length - 5)
+          : hrRecords;
+      for (final r in last5) {
+        print('[DashboardBloc] HR record: ${r.bpm} bpm at ${r.time}');
+      }
+    }
+    if (tempRecords.isNotEmpty) {
+      final latest = tempRecords.last;
+      print('[DashboardBloc] Latest Temp: ${latest.celsius} at ${latest.time}');
+    }
+    if (spo2Records.isNotEmpty) {
+      final latest = spo2Records.last;
+      print('[DashboardBloc] Latest SpO2: ${latest.spo2}% at ${latest.time}');
+    }
+    print(
+        '[DashboardBloc] Record counts — HR:${hrRecords.length} Steps:${stepRecords.length} Temp:${tempRecords.length} SpO2:${spo2Records.length} BP:${bpRecords.length} Glu:${glucoseRecords.length}');
+
     emit(state.copyWith(
       status: DashboardStatus.loaded,
-      heartRateHistory: HealthHiveService.getHeartRateRecords(),
-      stepHistory: HealthHiveService.getStepRecords(),
-      sleepHistory: HealthHiveService.getSleepRecords(),
-      bloodOxygenHistory: HealthHiveService.getBloodOxygenRecords(),
-      bloodPressureHistory: HealthHiveService.getBloodPressureRecords(),
-      temperatureHistory: HealthHiveService.getTemperatureRecords(),
-      bloodGlucoseHistory: HealthHiveService.getBloodGlucoseRecords(),
+      heartRateHistory: hrRecords,
+      stepHistory: stepRecords,
+      sleepHistory: sleepRecords,
+      bloodOxygenHistory: spo2Records,
+      bloodPressureHistory: bpRecords,
+      temperatureHistory: tempRecords,
+      bloodGlucoseHistory: glucoseRecords,
     ));
     print('[DashboardBloc] All Hive data reloaded into state');
   }

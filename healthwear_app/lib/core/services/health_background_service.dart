@@ -13,28 +13,32 @@ void startCallback() {
 
 // ─── Task handler — runs in the foreground service ──────────────────────────
 class HealthDataTaskHandler extends TaskHandler {
-  /// Wait for dependencies registered by main() — they run in the same isolate.
-  Future<bool> _waitForDeps({int maxWaitSec = 10}) async {
-    for (int i = 0; i < maxWaitSec * 10; i++) {
-      if (sl.isRegistered<HealthRepository>()) return true;
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-    return false;
-  }
-
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     print('[BGService] onStart — starter: $starter');
 
-    // Wait for main() to register dependencies (same isolate).
+    // The foreground service may run in a separate Dart engine on Android.
+    // In that case, GetIt (sl) is empty because main() runs in a different engine.
+    // Try to wait briefly for same-isolate deps, then self-initialize if needed.
     if (!sl.isRegistered<HealthRepository>()) {
-      print('[BGService] Waiting for main() to register dependencies...');
-      final ok = await _waitForDeps();
-      if (!ok) {
-        print('[BGService] Dependencies not available after 10s — skipping');
+      print('[BGService] Deps not yet available — waiting 3s for main()...');
+      for (int i = 0; i < 30; i++) {
+        if (sl.isRegistered<HealthRepository>()) break;
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+    }
+
+    if (!sl.isRegistered<HealthRepository>()) {
+      print(
+          '[BGService] Deps still missing — initializing independently (separate engine)');
+      try {
+        await initDependencies();
+      } catch (e) {
+        print('[BGService] initDependencies error: $e');
         return;
       }
     }
+
     print('[BGService] Dependencies OK');
 
     // Initialize Hive (idempotent — safe to call multiple times)
@@ -50,8 +54,14 @@ class HealthDataTaskHandler extends TaskHandler {
 
     try {
       if (!sl.isRegistered<HealthRepository>()) {
-        print('[BGService] Dependencies not available — skipping sync');
-        return;
+        print('[BGService] Dependencies not available — attempting init...');
+        try {
+          await initDependencies();
+          await HealthHiveService.init();
+        } catch (e) {
+          print('[BGService] Init failed in onRepeatEvent: $e');
+          return;
+        }
       }
 
       final healthRepo = sl<HealthRepository>();
@@ -164,7 +174,7 @@ class HealthBackgroundService {
       ),
       foregroundTaskOptions: ForegroundTaskOptions(
         eventAction: ForegroundTaskEventAction.repeat(
-          15 * 60 * 1000, // 15 minutes in ms
+          2 * 60 * 1000, // 2 minutes in ms (TESTING — change back to 15)
         ),
         autoRunOnBoot: true,
         autoRunOnMyPackageReplaced: true,
