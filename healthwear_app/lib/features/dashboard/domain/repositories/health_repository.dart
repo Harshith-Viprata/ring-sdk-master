@@ -21,10 +21,11 @@ abstract class HealthRepository {
   Future<Either<Failure, void>> setRealTimeUpload(bool enable);
 
   /// Enable continuous health monitoring on the device sensors.
-  Future<Either<Failure, void>> enableHealthMonitoring({int interval = 5});
+  Future<Either<Failure, void>> enableHealthMonitoring({int interval = 15});
 
   /// Enable continuous temperature monitoring.
-  Future<Either<Failure, void>> enableTemperatureMonitoring({int interval = 5});
+  Future<Either<Failure, void>> enableTemperatureMonitoring(
+      {int interval = 15});
 
   // ─── History Queries ─────────────────────────────────────────────────
 

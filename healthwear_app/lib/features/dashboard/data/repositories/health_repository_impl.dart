@@ -152,7 +152,7 @@ class HealthRepositoryImpl implements HealthRepository {
 
   @override
   Future<Either<Failure, void>> enableHealthMonitoring({
-    int interval = 5,
+    int interval = 15,
   }) async {
     try {
       await bleDataSource.setHealthMonitoring(
@@ -167,7 +167,7 @@ class HealthRepositoryImpl implements HealthRepository {
 
   @override
   Future<Either<Failure, void>> enableTemperatureMonitoring({
-    int interval = 5,
+    int interval = 15,
   }) async {
     try {
       // Temperature monitoring uses the same health monitoring mechanism

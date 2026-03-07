@@ -166,7 +166,7 @@ class HealthBackgroundService {
       ),
       foregroundTaskOptions: ForegroundTaskOptions(
         eventAction: ForegroundTaskEventAction.repeat(
-          2 * 60 * 1000, // 15 minutes in ms
+          15 * 60 * 1000, // 15 minutes in ms
         ),
         autoRunOnBoot: true,
         autoRunOnMyPackageReplaced: true,
