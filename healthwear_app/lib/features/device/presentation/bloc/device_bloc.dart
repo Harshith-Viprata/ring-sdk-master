@@ -223,14 +223,17 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   /// Fetch battery info after connection.
   /// Name/MAC are already set from savedDevice or connect event.
   Future<void> _queryDeviceInfo() async {
-    print('[DeviceBloc] _queryDeviceInfo — querying battery...');
-    await Future.delayed(const Duration(seconds: 2));
+    print('[DeviceBloc] _queryDeviceInfo — waiting for SDK setup...');
+    // Wait for SDK post-connect setup (getDeviceFeature, queryDeviceMCU, etc.)
+    await Future.delayed(const Duration(seconds: 5));
+    if (isClosed) return;
     try {
+      print('[DeviceBloc] Querying basicInfo for battery...');
       final basicInfo = await _bleDataSource
           .queryBasicInfo()
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 10));
       final battery = basicInfo?.batteryPower ?? 0;
-      print('[DeviceBloc] queryBasicInfo: battery=$battery');
+      print('[DeviceBloc] queryBasicInfo success: battery=$battery');
       if (!isClosed && battery > 0) {
         add(DeviceSdkEvent({
           NativeEventType.deviceInfo: {
