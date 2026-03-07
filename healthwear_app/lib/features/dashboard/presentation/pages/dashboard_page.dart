@@ -1,16 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../config/routes/app_router.dart';
+import '../../../../core/services/health_background_service.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/ble_status_bar.dart';
 import '../../../../shared/widgets/metric_card.dart';
 import '../../../device/presentation/bloc/device_bloc.dart';
 import '../bloc/dashboard_bloc.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Listen for sync_complete messages from the foreground service
+    FlutterForegroundTask.addTaskDataCallback(_onReceiveTaskData);
+  }
+
+  void _onReceiveTaskData(Object data) {
+    if (data is Map && data['type'] == 'sync_complete') {
+      print('[DashboardPage] Received sync_complete from BG service');
+      if (mounted) {
+        context.read<DashboardBloc>().add(BackgroundSyncComplete());
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    FlutterForegroundTask.removeTaskDataCallback(_onReceiveTaskData);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +52,9 @@ class DashboardPage extends StatelessWidget {
         final dashBloc = context.read<DashboardBloc>();
         dashBloc.add(LoadHealthData());
         dashBloc.add(StartRealTimeMonitoring());
+
+        // Start the foreground service for background monitoring
+        HealthBackgroundService.start();
       },
       child: BlocBuilder<DeviceBloc, DeviceState>(
         builder: (context, deviceState) {

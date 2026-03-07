@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/health_hive_service.dart';
 import '../../domain/entities/health_data.dart';
 import '../../domain/repositories/health_repository.dart';
 
@@ -12,7 +13,6 @@ part 'dashboard_state.dart';
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final HealthRepository _healthRepo;
   StreamSubscription<HealthReading>? _healthSub;
-  Timer? _refreshTimer;
 
   DashboardBloc({required HealthRepository healthRepository})
       : _healthRepo = healthRepository,
@@ -21,13 +21,25 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<StartRealTimeMonitoring>(_onStartRealTime);
     on<RealTimeHealthUpdate>(_onRealTimeUpdate);
     on<RefreshMetric>(_onRefreshMetric);
+    on<BackgroundSyncComplete>(_onBackgroundSyncComplete);
   }
 
   Future<void> _onLoadHealthData(
     LoadHealthData event,
     Emitter<DashboardState> emit,
   ) async {
-    emit(state.copyWith(status: DashboardStatus.loading));
+    // Phase 0: Instantly load cached data from Hive (available offline)
+    emit(state.copyWith(
+      status: DashboardStatus.loading,
+      heartRateHistory: HealthHiveService.getHeartRateRecords(),
+      stepHistory: HealthHiveService.getStepRecords(),
+      sleepHistory: HealthHiveService.getSleepRecords(),
+      bloodOxygenHistory: HealthHiveService.getBloodOxygenRecords(),
+      bloodPressureHistory: HealthHiveService.getBloodPressureRecords(),
+      temperatureHistory: HealthHiveService.getTemperatureRecords(),
+      bloodGlucoseHistory: HealthHiveService.getBloodGlucoseRecords(),
+    ));
+    print('[DashboardBloc] Phase 0: Loaded cached data from Hive');
 
     // Phase 1: Load non-combinedData histories in parallel
     // (Only queries that DON'T use HealthDataType.combinedData)
@@ -110,6 +122,23 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       temperatureHistory: finalTemps,
       bloodGlucoseHistory: finalGlucose,
     ));
+
+    // Save fresh ring data to Hive for offline access
+    hrResult.fold(
+        (_) {},
+        (d) =>
+            HealthHiveService.saveHeartRateRecords(d as List<HeartRateRecord>));
+    HealthHiveService.saveStepRecords(finalSteps);
+    sleepResult.fold((_) {},
+        (d) => HealthHiveService.saveSleepRecords(d as List<SleepRecord>));
+    HealthHiveService.saveBloodOxygenRecords(finalSpo2);
+    bpResult.fold(
+        (_) {},
+        (d) => HealthHiveService.saveBloodPressureRecords(
+            d as List<BloodPressureRecord>));
+    HealthHiveService.saveTemperatureRecords(finalTemps);
+    HealthHiveService.saveBloodGlucoseRecords(finalGlucose);
+    print('[DashboardBloc] Ring data saved to Hive');
   }
 
   Future<void> _onStartRealTime(
@@ -153,11 +182,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       print('[DashboardBloc] enableHealthMonitoring failed: $e');
     });
 
-    // Start 60s periodic refresh to re-sync historical data
-    _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(const Duration(seconds: 60), (_) {
-      add(LoadHealthData());
-    });
+    // Note: periodic refresh removed — foreground service handles 15-min sync
+    // Dashboard only loads data on initial connect + real-time BLE stream
   }
 
   void _onRealTimeUpdate(
@@ -204,6 +230,33 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           ? (d['distanceKm'] as num).toDouble()
           : state.liveDistance,
     ));
+
+    // ── Phase 2: Save real-time readings to Hive for history ──
+    if (d['heartRate'] is num && (d['heartRate'] as num).toInt() > 0) {
+      HealthHiveService.saveRealtimeHeartRate((d['heartRate'] as num).toInt());
+    }
+    if (d['spo2'] is num && (d['spo2'] as num).toInt() > 0) {
+      HealthHiveService.saveRealtimeSpO2((d['spo2'] as num).toInt());
+    }
+    if (d['systolic'] is num &&
+        (d['systolic'] as num).toInt() > 0 &&
+        d['diastolic'] is num &&
+        (d['diastolic'] as num).toInt() > 0) {
+      HealthHiveService.saveRealtimeBP(
+        (d['systolic'] as num).toInt(),
+        (d['diastolic'] as num).toInt(),
+      );
+    }
+    if (d['temperature'] is num && (d['temperature'] as num).toDouble() > 0) {
+      HealthHiveService.saveRealtimeTemperature(
+        (d['temperature'] as num).toDouble(),
+      );
+    }
+    if (d['bloodGlucose'] is num && (d['bloodGlucose'] as num).toDouble() > 0) {
+      HealthHiveService.saveRealtimeGlucose(
+        (d['bloodGlucose'] as num).toDouble(),
+      );
+    }
   }
 
   Future<void> _onRefreshMetric(
@@ -232,10 +285,26 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }
   }
 
+  /// Foreground service completed a background sync — reload from Hive.
+  void _onBackgroundSyncComplete(
+    BackgroundSyncComplete event,
+    Emitter<DashboardState> emit,
+  ) {
+    print('[DashboardBloc] Background sync complete — reloading from Hive');
+    emit(state.copyWith(
+      heartRateHistory: HealthHiveService.getHeartRateRecords(),
+      stepHistory: HealthHiveService.getStepRecords(),
+      sleepHistory: HealthHiveService.getSleepRecords(),
+      bloodOxygenHistory: HealthHiveService.getBloodOxygenRecords(),
+      bloodPressureHistory: HealthHiveService.getBloodPressureRecords(),
+      temperatureHistory: HealthHiveService.getTemperatureRecords(),
+      bloodGlucoseHistory: HealthHiveService.getBloodGlucoseRecords(),
+    ));
+  }
+
   @override
   Future<void> close() {
     _healthSub?.cancel();
-    _refreshTimer?.cancel();
     return super.close();
   }
 }

@@ -35,6 +35,9 @@
     <!-- ============ Vibration ============ -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- Notifications (required on Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <!-- BLE Feature Declaration -->
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
 
@@ -74,6 +77,11 @@
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
+        <!-- Foreground service for background BLE health monitoring -->
+        <service
+            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:foregroundServiceType="connectedDevice"
+            android:exported="false" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility? and
