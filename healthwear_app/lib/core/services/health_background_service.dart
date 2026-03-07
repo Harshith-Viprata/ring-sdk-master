@@ -19,15 +19,18 @@ class HealthDataTaskHandler extends TaskHandler {
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     print('[BGService] onStart — starter: $starter');
 
-    // The TaskHandler runs in a separate isolate where GetIt is empty.
-    // Re-initialize dependencies so we have access to HealthRepository + BLE.
+    // On Android, flutter_foreground_task v9 runs in the SAME isolate.
+    // Dependencies are already registered by main(). Only re-init if
+    // truly missing (e.g. after app was killed while service persisted).
     if (!sl.isRegistered<HealthRepository>()) {
-      print('[BGService] Initializing dependencies in background isolate...');
+      print('[BGService] Dependencies missing — initializing...');
       await initDependencies();
       print('[BGService] Dependencies initialized OK');
+    } else {
+      print('[BGService] Dependencies already available — reusing');
     }
 
-    // Initialize Hive in this isolate so we can persist health data
+    // Initialize Hive in this context (safe to call multiple times)
     await HealthHiveService.init();
 
     print('[BGService] Foreground service started at $timestamp');
